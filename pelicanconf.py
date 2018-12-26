@@ -5,7 +5,7 @@ from __future__ import unicode_literals
 AUTHOR = 'TORGiren'
 SITENAME = 'TORGiren DevOpses Blog'
 #SITEURL = ''
-SITEURL = 'http://blog.fabrykowski.pl'
+SITEURL = 'https://blog.fabrykowski.pl'
 
 PATH = 'content'
 
