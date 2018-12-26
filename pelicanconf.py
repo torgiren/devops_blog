@@ -71,3 +71,10 @@ THEME = 'pelican-themes/tuxlite_tbs'
 DEFAULT_METADATA = {
     'status': 'draft'
 }
+
+STATIC_PATHS = [
+    'static',
+]
+EXTRA_PATH_METADATA = {
+    'static/robots.txt': {'path': 'robots.txt'},
+}
