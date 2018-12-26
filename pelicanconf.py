@@ -67,3 +67,7 @@ SITEMAP = {
 
 
 THEME = 'pelican-themes/tuxlite_tbs'
+
+DEFAULT_METADATA = {
+    'status': 'draft'
+}
