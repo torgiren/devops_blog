@@ -66,6 +66,7 @@ SITEMAP = {
 }
 
 
+#THEME = 'pelican-themes/uikit'
 THEME = 'pelican-themes/tuxlite_tbs'
 
 DEFAULT_METADATA = {
@@ -77,4 +78,5 @@ STATIC_PATHS = [
 ]
 EXTRA_PATH_METADATA = {
     'static/robots.txt': {'path': 'robots.txt'},
+    'static/favicon.ico': {'path': 'favicon.ico'},
 }
