@@ -62,6 +62,76 @@ Studium przypadków
 ------------------
 
 ### Wymagająca aplikacja działająca prawidłowo
+Często zdarza się, że obciążenie `CPU` jest wysokie.
+Głównie wyróżnia się wtedy statystyka `user`.
+Oznacza to, że cały czas procesora spędzany jest na uruchomionej aplikacji.
+Jeżeli w takim przypadku aplikacja odpowiada użytkownikowi oraz zapisuje *logi* w specyficznych dla siebie interwałach czasowych, możemy uznać, że aplikacja działa poprawnie tylko jest mocno obciążona.
+Warto w takim przypadku rozważyć utworzenie bądź powiększenie klastra aplikacji w celu odciążenia maszyny.
 
-### Aplikacja w pętli nieskończonej
+### 100% CPU czyli aplikacja w pętli nieskończonej
+Innym częstym przypadkiem jest błąd aplikacji powodujący wejście w różne typy pętli nieskończonych.
+Objawia się to zwykle użyciem `user` na 100% dla jednego lub wielu rdzeni.
+Zwykle aplikacja nie odpowiada wtedy na żądania użytkownika jak również nie zapisuje nic w swoich logach.
+W przypadku aplikacji *Javowych*, często przed takich stanem można zauważyć w logach wyjątek `Out of memory`.
 
+Ponieważ czasami aplikacje w tym stanie utylizują jedynie jeden rdzeń procesora, monitorowanie średniego obciążenia daje nieprawdziwe wyniki.
+Weźmy dla przykładu maszynę posiadającą cztery rdzenie.
+Gdy jedna z aplikacji ulegnie awarii i zużyje 100% `user` jednego rdzenia, średnie obciążenie `CPU` będzie na poziomie 25%, co przez wiele systemów monitoringu jest uznawane za wartość poprawną.
+
+Jedną z metod analizy czy aplikacja wpadła w powyższy stan jest użycie polecenia `strace`.
+Pozwala ono na *podglądanie* wywołań systemowych wykonywanych przez aplikację.
+Jeżeli aplikacja nie wykonuje żadnych *rozsądnych* wywołań systemowych, tj. `open`, `read`, `write`, `connect`, 'accept', `clone` itp, a jedynie *syscall*-e z rodziny `futex`, bądź żadnych *syscall*-i, można przypuszczać, że wpadła w pętle nieskończoną.
+Oczywiście, trzeba pamiętać, ze istnieje możliwość, iż aplikacja w danej chwili działa poprawnie, tylko otrzymała bardzo obciążające zapytanie.
+Tutaj należy wspomóc się wiedzą dot. konkretnej aplikacji.
+
+W przypadku gdy aplikacja nie przyjmuje nowych zapytań, a aktualnie przetwarzane (bądź pętla nieskończona) trwa dłużej niż wartość *timeout* przez którą aplikacja kliencka będzie oczekiwała na odpowiedź, dobrym rozwiązaniem jest restart aplikacji.
+
+### *Swapowanie* czyli brak `RAM`-u
+Również bardzo częstym, ale i zwykle łatwym do rozwiązania problemem jest brak pamięci `RAM` oraz *swapowanie* aplikacji.
+
+Sytuacja taka objawia się zwykle poprzez trzy objawy.
+
+* zwiększone czasy odpowiedzi aplikacji.
+* zwiększony `load average` - od niskich rzędu dwukrotności ilości rdzeni, aż po wartości rzędu 700 czy 1500.
+* wysoka wartość `iowait`.
+
+Aby zweryfikować, czy taka sytuacja ma miejsce, warto wykonać dwa kroki.
+Po pierwsze, używając polecenia `free` (polecam używanie flagi `-m` która wyświetla wartości w megabajtach a nie kilobajtach).
+Jeżeli wyjście z polecenia `free` pokazuje nam, że wartość `used` jest zbliżona do wartości `total` oraz że mamy włączony `swap` oraz że `swap` jest w używany (kilka megabajtów jest akceptowalne) to może świadczyć o tym, że system był zmuszony część pamięci zapisać na dysk.  
+Warto wtedy użyć narzędzia `top`, w celu sprawdzenia aktualnego użycia `CPU` i jego wartości `wa` (od `iowait`) oraz czy na liście procesów znaczącą ilość `CPU` używa proces `kswap`. Są to objawy małej ilość pamięci `ram`
+
+W takim przypadku należy, jeśli do możliwe, dołożyć dodatkowej pamięci (co w środowiskach wirtualnych nie jest dużym problemem), bądź w przypadku posiadania kilku aplikacji na jednej maszynie rozważenie uruchomienie tych aplikacji na dedykowanych maszynach.
+
+### *IO wait* czyli problemy z dyskiem
+Tutaj sytuacja jest bardzo zbliżona do problemów ze `SWAP`.
+Gdy aplikacja próbuje wykorzystywać urządzenia wejścia wyjścia w sposób bardziej wymagający niż pozwalają na to możliwości urządzeń, procesor spędza czas na zapisywaniu.
+Rośnie wtedy obciążenie `io wait` oraz bardzo często `load` systemu.
+
+W celu diagnostyki obciążenia dysku można użyć dwóch narzędzi:
+
+* *iostat*
+* *iotop*
+
+*iostat* monitoruje utylizację dysków w systemie.
+Po uruchomieniu polecenia `iostat` otrzymamy statystyki *od uruchomienia systemu*.
+Aby włączyć tryb monitorowania ciągłego, należy podać jako parametr liczbę sekund co ile ma nastąpić odświeżenie.
+Dodatkowo, przydatną opcją jest opcja `-x` która włącza wypisywanie bardziej szczegółowych statystyk.
+Osobiście zawsze uruchamiam *iostat* poleceniem `iostat -x 1`.
+
+Najważniejsze elementy które są prezentowane przez *iostat* to:
+
+* `avg-cpu` które pokazuje aktualne obciążenie procesora
+* `rkB/s` oraz `wkB/s` które pokazują ilość danych odczytywanych i zapisywanych na dane urządzenie
+* `r_await` oraz `w_await` które pokazują czas w milisekundach jaki dane czekają na zapisanie
+* `util` które pokazuje procent utylizacji danego urządzenia
+
+W przypadku obserwacji, że któreś urządzenie ma podwyższone `util` należy ocenić, czy ilość danych zapisywany bądź odczytywanych jest zbyt duża (co może być sugestią to sklastrowania aplikacji w celu jej odciążenia), czy, w przypadku wysokiej utylizacji przy niskich transferach, mamy do czynienia z awarią dysku.
+
+*iotop* jest narzędziem pozwalającym na identyfikację procesów najbardziej wykorzystujących zasoby dyskowe.
+W przypadku, gdy *iostat* daje sugestię, że dyski twarde są sprawne oraz występuje duże ich obciążenie, *iotop* jest w stanie zidentyfikować który proces bądź procesy za to odpowiedzialne.
+Aplikacja wypisuje uruchomione w systemie procesy oraz sortuje je ze względu na poziom w jakim wykorzystują dyski twarde.
+Dodatkowo wypisuje ilość danych jakie dany proces odczytuje i zapisuje.  
+Po ustaleniu najbardziej obciążającego procesu możemy przystąpić do analizy, czy takie zachowanie jest zachowaniem pożądanym.
+
+### Wysokie *system cpu* czyli nieoptymalna aplikacja
+TODO
