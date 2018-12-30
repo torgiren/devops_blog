@@ -1,8 +1,9 @@
 Title: Podstawowa analiza obciążenia systemu
-Status: draft
 keywords: linux, hacking, load, cpu, io
+tags: youtube
 Summary: W tym artykule opisuję narzędzia i metody analizy różnych typów obciążenia.
 Authors: TORGiren
+date: 2018-12-29
 
 W tym poście omówię różne typy obciążeń z jakimi możemy się spotkać podczas pracy z systemami GNU/Linux oraz przedstawię narzędzia, które są w stanie pomóc w analizie przyczyn tych obciążeń
 
