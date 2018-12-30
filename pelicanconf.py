@@ -32,7 +32,7 @@ DEFAULT_PAGINATION = 10
 
 # Uncomment following line if you want document-relative URLs when developing
 RELATIVE_URLS = True
-PLUGINS = ['sitemap']
+PLUGINS = ['sitemap', 'liquid_tags.youtube']
 PLUGIN_PATHS = ['pelican-plugins']
 
 EXTERNDED_SITEMAP_PLUGIN = {
