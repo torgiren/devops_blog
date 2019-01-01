@@ -3,6 +3,7 @@ keywords: haproxy, lvs, linux, load, balancing
 tags: youtube, haproxy, lvs
 Summary: Omówienie zasady działania balancerów Haproxy i LVS oraz porównanie wydajności obydwu w środowisku z wysyconym łączem wychodzącym.
 date: 2018-12-29
+State: published
 
 W tym poście omówię ideę balansowania ruchy, przedstawię dwa popularne rozwiązania: *Haproxy* oraz *LVS*, a następnie przeprowadzę testy wydajności obydwu rozwiązań w środowisku z wysyconym łączem wychodzącym.
 
