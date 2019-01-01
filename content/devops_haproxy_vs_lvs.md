@@ -17,7 +17,7 @@ Teoria
 
 ### Czym jest balansowanie ruchu?
 Wyobraźmy sobie, że mamy klientów, którzy chcą odpytać o stronę www, np: strona.pl.
-Gdybyśmy mieli tylko jeden serwer obsługujący tą stronę, klient by zawsze pytał o żądaną stronę właśnie ten serwer.
+Gdybyśmy mieli tylko jeden serwer obsługujący tę stronę, klient by zawsze pytał o żądaną stronę właśnie ten serwer.
 
 I tu pojawia się potrzeba balansowania ruchu.
 Robi się to w dwóch celach.
