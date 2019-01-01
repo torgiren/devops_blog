@@ -5,7 +5,7 @@ Summary: Omówienie zasady działania balancerów Haproxy i LVS oraz porównanie
 date: 2018-12-29
 Status: published
 
-W tym poście omówię ideę balansowania ruchy, przedstawię dwa popularne rozwiązania: *Haproxy* oraz *LVS*, a następnie przeprowadzę testy wydajności obydwu rozwiązań w środowisku z wysyconym łączem wychodzącym.
+W tym poście omówię ideę balansowania ruchu. Przedstawię dwa popularne rozwiązania: *Haproxy* oraz *LVS*, a następnie przeprowadzę testy wydajności obydwu rozwiązań w środowisku z wysyconym łączem wychodzącym.
 
     Uwaga: Ten post jest pisany po nagraniu materiały na YouTube.
     Dlatego zachowany został chaotyczny charakter tego materiału
