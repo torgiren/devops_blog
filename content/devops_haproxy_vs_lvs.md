@@ -256,7 +256,7 @@ W celu porównania wydajności obu rozwiązań, zróbmy test polegający na pobr
 
 Poniżej znajduje się wykres utylizacji łącza podczas testów.
 
-[![Wykres transferu danych w Haproxy oraz LVS](/thumbs/devops_haproxy_vs_lvs_wykres_porownawczy_thumbnail_tall.jpg)]({static}/images/devops_haproxy_vs_lvs_wykres_porownawczy.jpg)
+[![Wykres transferu danych w Haproxy oraz LVS](/thumbs/devops_haproxy_vs_lvs_wykres_porownawczy_thumbnail_tall.jpg "Wykres transferu danych w Haproxy oraz LVS")]({static}/images/devops_haproxy_vs_lvs_wykres_porownawczy.jpg)
 
 Jak widać na pierwszym wykresie, przy zapytaniach kierowanych do *Haproxy*, jeden z serwerów ma tzw. *sufit*, czyli ilość wysyłanych danych osiągnęła wartość maksymalną.
 Ten charakterystyczny kształt wykresu pojawia się często, nie tylko w kontekście sieci, i zwykle oznacza, że mierzona wartość jest wąskim gardłem, gdyż jest wysycona w 100%.
