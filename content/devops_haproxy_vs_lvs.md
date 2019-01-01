@@ -7,7 +7,7 @@ Status: published
 
 W tym poście omówię ideę balansowania ruchu. Przedstawię dwa popularne rozwiązania: *Haproxy* oraz *LVS*, a następnie przeprowadzę testy wydajności obydwu rozwiązań w środowisku z wysyconym łączem wychodzącym.
 
-    Uwaga: Ten post jest pisany po nagraniu materiały na YouTube.
+    Uwaga: Ten post jest pisany po nagraniu materiału na YouTube.
     Dlatego zachowany został chaotyczny charakter tego materiału
 
 Teoria
