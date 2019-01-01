@@ -52,7 +52,7 @@ Przy ruchu `HTTP` zwykle zapytania od klientów są małe, a odpowiedzi są du�
 ### Jak działa *Haproxy*
 
 *Haproxy* jest *load balancer*-em *natującym*, czyli gdy zapytanie trafia od klienta do *Haproxy*, ten nawiązuje połączenie do jednego z serwerów *backend*-owych (algorytmów wyboru do którego serwera nastąpi połączenie jest kilka), wykonuje (często identyczne, a jeśli nie, to bardzo zbliżone do oryginalnego) zapytanie `HTTP`.
-Po serwer *backend*-owy odpowiada do *Haproxy* a to ostatecznie wysyła odpowiedź do klienta.
+Potem serwer *backend*-owy odpowiada do *Haproxy* a to ostatecznie wysyła odpowiedź do klienta.
 
 W związku z tym, może nastąpić sytuacja, w której sumaryczna odpowiedź od serwerów *backend*-owych, a co za tym idzie ruch wychodzący z *Haproxy* do klientów będzie większy niż przepustowość łącza doprowadzonego do serwera.
 Powoduje to opóźnienia w otrzymywaniu przez klientów odpowiedzi, nie wynikające z braku standardowych zasobów jakimi są `CPU` bądź `RAM`.
