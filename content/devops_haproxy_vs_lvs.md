@@ -13,7 +13,7 @@ W tym poście omówię ideę balansowania ruchu. Przedstawię dwa popularne ro
 Teoria
 ------
 
-{% youtube  iSSAVJg7_Pw %}
+{% youtube  iSSAVJg7_Pw  320 180 %}
 
 ### Czym jest balansowanie ruchu?
 Wyobraźmy sobie, że mamy klientów, którzy chcą odpytać o stronę www, np: strona.pl.
@@ -124,7 +124,7 @@ Dlatego `uplink` *director*-a nie jest już problemem, gdyż żadne dane nie wra
 Konfiguracja
 ------------
 
-{% youtube uryo9AGgTFY %}
+{% youtube uryo9AGgTFY 320 180 %}
 
 ### Maszyny aplikacyjne
 
@@ -234,7 +234,7 @@ a następnie dodajemy *real server*-y.
 Porównanie
 ----------
 
-{% youtube 3z8Ilu8-vzY %}
+{% youtube 3z8Ilu8-vzY 320 180 %}
 
 W celu porównania wydajności obu rozwiązań, zróbmy test polegający na pobraniu 100 obrazków z równoległą liczbą połączeń wynoszącą 12.
 
