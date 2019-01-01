@@ -279,3 +279,5 @@ Zachowanie odczytane z wykresu ma swoje odzwierciedlenie w wynikach `apache benc
 
 Widzimy, że w przypadku *LVS* zarówno `Tranfer rate` jest czterokrotnie większy, jak i sumaryczny czas testu jest czterokrotnie mniejszy.
 To pokazuje, że w środowisku w którym następuje wysycenie łącza wychodzącego rozwiązaniem może być zastosowanie *LVS* w trybie *direct routing*.
+
+Zachęcam do komentowania w odpowiednimi filmami na YouTube
