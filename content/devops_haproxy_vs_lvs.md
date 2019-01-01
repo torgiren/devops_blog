@@ -17,7 +17,7 @@ Teoria
 
 ### Czym jest balansowanie ruchu?
 Wyobraźmy sobie, że mamy klientów, którzy chcą odpytać o stronę www, np: strona.pl.
-Gdybyśmy mieli tylko jeden serwer obsługujący tę stronę, klient zawsze pytałby o żądaną stronę właśnie ten serwer.
+Gdybyśmy mieli tylko jeden serwer obsługujący tę stronę, klient zawsze pytałby o żądaną stronę właśnie go.
 
 I tu pojawia się potrzeba balansowania ruchu.
 Robi się to w dwóch celach:
@@ -27,7 +27,7 @@ Robi się to w dwóch celach:
 
 W klastrze *HA* mamy kilka serwerów.
 Gdy jeden z nich ulegnie awarii, wtedy kolejne zapytania będą kierowane na inne, sprawne maszyny.
-W efekcie klient zawsze otrzyma odpowiedź na swoje zapytanie.
+W efekcie, klient zawsze otrzyma odpowiedź na swoje zapytanie.
 
 W klastrze *HP* również mamy kilka serwerów.
 Gdy serwis ma wielu klientów, to istnieje pewna ilość zapytań, przy których jeden serwer nie ma wystarczających zasobów, aby przetwarzać zapytania bez opóźnień.
