@@ -32,7 +32,7 @@ DEFAULT_PAGINATION = 10
 
 # Uncomment following line if you want document-relative URLs when developing
 RELATIVE_URLS = True
-PLUGINS = ['sitemap', 'liquid_tags.youtube']
+PLUGINS = ['sitemap', 'liquid_tags.youtube', 'thumbnailer']
 PLUGIN_PATHS = ['pelican-plugins']
 
 EXTERNDED_SITEMAP_PLUGIN = {
@@ -73,6 +73,7 @@ DEFAULT_METADATA = {
 
 STATIC_PATHS = [
     'static',
+    'images',
 ]
 EXTRA_PATH_METADATA = {
     'static/robots.txt': {'path': 'robots.txt'},
@@ -84,3 +85,6 @@ EXTRA_PATH_METADATA = {
     'static/favicon-32x32.png': {'path': 'favicon-32x32.png'},
     'static/site.webmanifest': {'path': 'site.webmanifest'},
 }
+
+IMAGE_PATH = 'images'
+THUMBNAIL_DIR = 'thumbs'
