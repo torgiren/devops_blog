@@ -20,13 +20,13 @@ Wyobraźmy sobie, że mamy klientów, którzy chcą odpytać o stronę www, np:
 Gdybyśmy mieli tylko jeden serwer obsługujący tę stronę, klient zawsze pytałby o żądaną stronę właśnie ten serwer.
 
 I tu pojawia się potrzeba balansowania ruchu.
-Robi się to w dwóch celach.
+Robi się to w dwóch celach:
 
 * **HA** (High Availability) czyli **wysoka dostępność**
 * **HP** (High Performance) czyli **wysoka wydajność**
 
 W klastrze *HA* mamy kilka serwerów.
-Gdy jedna z nich ulegnie awarii, wtedy kolejne zapytania będą kierowane na inne, sprawne maszyny.
+Gdy jeden z nich ulegnie awarii, wtedy kolejne zapytania będą kierowane na inne, sprawne maszyny.
 W efekcie klient zawsze otrzyma odpowiedź na swoje zapytanie.
 
 W klastrze *HP* również mamy kilka serwerów.
