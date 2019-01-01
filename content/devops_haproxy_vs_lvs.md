@@ -113,7 +113,7 @@ Tak zmieniony pakiet może wyglądać następująco:
     dest mac: 00:00:de:af:ba:be
     (...)
 
-Taki pakiet (po adresie `MAC`) trafi do *real server1*.
+Taki pakiet (po adresie `MAC`) trafi do *real server2*.
 Po otrzymaniu takiego pakiety przez *real server* oraz zweryfikowaniu, że docelowy adres `IP` jest również adresem *real server*-a (tym wirtualnym), serwer zaczyna go przetwarzać.
 
 Po przetworzeniu zapytania, *real server* (w przeciwieństwie do *Haproxy*) nie wysyła odpowiedzi do *director*-a, a odpowiada do maszyny, która jest wpisana w polu `source ip`. Jest to adres klienta.
