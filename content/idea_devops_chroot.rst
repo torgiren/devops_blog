@@ -1,5 +1,5 @@
-Chroot w rst
-############
+Chroot
+######
 
 :keywords: linux, chroot, hacking
 :tags: linux, chroot, hacking
@@ -178,4 +178,66 @@ Warto przed tym ustawić odpowiedni zmienna `PATH`, gdyż niekoniecznie będzie 
 
 Tak przygotowany *chroot* zapewnia nam izolację procesów w nim uruchomionych od pozostałego *filesystem*-u.
 
+Uruchamianie aplikacji w *chroot*
+---------------------------------
 
+Jak przykładową aplikację, uruchomimy sobie wbudowany w *python*-a 3 server HTTP.
+Aby to zrobić, wkopiujemy plik binarny, potrzebne biblioteki systemowe oraz wszystkie pliki interpretera *python* (wartym rozważenia rozwiązaniem jest również instalacja danej aplikacji w odpowiednich katalogach, zamiast kopiowanie plików)
+
+.. code-block:: console
+
+   $ cp /usr/bin/python3.6 /tmp/first_chroot/bin/
+   $ ldd /tmp/first_chroot/bin/python3.6
+           linux-gate.so.1 (0xb7f02000)
+           libpython3.6m.so.1.0 => /lib/libpython3.6m.so.1.0 (0xb7b83000)
+           libpthread.so.0 => /lib/libpthread.so.0 (0xb7b64000)
+           libdl.so.2 => /lib/libdl.so.2 (0xb7b5f000)
+           libutil.so.1 => /lib/libutil.so.1 (0xb7b5b000)
+           libm.so.6 => /lib/libm.so.6 (0xb7a59000)
+           libc.so.6 => /lib/libc.so.6 (0xb78b5000)
+           /lib/ld-linux.so.2 (0xb7f04000)
+   $ cp -iv /lib/libpython3.6m.so* /lib/libutil.so* /lib/libm.so* /tmp/first_chroot/lib/ -iv
+   '/lib/libpython3.6m.so' -> '/tmp/first_chroot/lib/libpython3.6m.so'
+   '/lib/libpython3.6m.so.1.0' -> '/tmp/first_chroot/lib/libpython3.6m.so.1.0'
+   '/lib/libutil.so' -> '/tmp/first_chroot/lib/libutil.so'
+   '/lib/libutil.so.1' -> '/tmp/first_chroot/lib/libutil.so.1'
+   '/lib/libm.so' -> '/tmp/first_chroot/lib/libm.so'
+   '/lib/libm.so.6' -> '/tmp/first_chroot/lib/libm.so.6'
+   $ mkdir /tmp/first_chroot/usr/lib -p
+   $ cp /usr/lib/python3.6 /tmp/first_chroot/usr/lib/
+   $ cp -iv /lib/libz.so* /tmp/first_chroot/lib
+   
+Następnie możemy uruchomić naszą przykładową aplikację:
+
+.. code-block:: console
+
+   # /bin/python3.6 -m http.server 8998
+
+Teraz możemy zobaczyć jaką korzyść niesie uruchomienie aplikacji w *chroot*.
+Załóżmy, że *atakujący*, wykorzystując błędy w aplikacji, przejął nad nią kontrolę i jest w stanie odczytać dowolne pliki z dysku.
+My na te potrzeby uruchomiliśmy serwer HTTP, który taką możliwość daje z założenia, ale efekt jest taki sam: klient łączący się do aplikacji ma dostęp do tych plików do których ma aplikacja.
+Łącząc się pod adres `http://127.0.0.1:8898` widzimy, że aplikacja, a co za tym idzie atakujący ma dostęp jedynie do plików umieszczonych w *chroot*
+
+.. code-block:: console
+
+   $ curl http://127.0.0.1:8898
+   <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+   <html>
+   <head>
+   <meta http-equiv="Content-Type" content="text/html; charset=ascii">
+   <title>Directory listing for /</title>
+   </head>
+   <body>
+   <h1>Directory listing for /</h1>
+   <hr>
+   <ul>
+   <li><a href="bin/">bin/</a></li>
+   <li><a href="lib/">lib/</a></li>
+   <li><a href="tmp/">tmp/</a></li>
+   <li><a href="usr/">usr/</a></li>
+   </ul>
+   <hr>
+   </body>
+   </html>
+
+Oznacza to, że w przypadku kompromitacji jednej aplikacji, nie następuje kompromitacja pozostałych uruchomionych tam aplikacji jak również samego systemu.
