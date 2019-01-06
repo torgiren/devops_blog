@@ -1,19 +1,21 @@
 Podstawy chroot
 ###############
 
-:keywords: linux, chroot, hacking
-:tags: linux, chroot, hacking
-:date: 2018-12-29
-:Status: draft
+:keywords: linux, chroot, hacking, chroot, ssh
+:tags: linux, chroot, hacking, chroot, ssh
+:date: 2019-01-07
+:Status: published
 :slug: chroot-basics
 
 W tym poście omówię ręczne tworzenie *chroot*-a, uruchamianie w nim aplikacji a także wykorzystanie go wraz z usługą *ssh*, do ograniczania uprawnień użytkowników logujących się do serwera.
+
+.. youtube:: QmQE-3Ho3vE
 
 Czym jest *chroot*?
 -------------------
 
 *Chroot* jest skrótem od *change root* i określa mechanizm zmiany katalogu bazowego dla uruchamianego procesu.
-Powoduje to, że dany proces oraz wszystkie jego procesy pochodne odnosząc się do ścieżki `/` odnoszą się do zmienionego katalogu.
+Powoduje to, że dany proces oraz wszystkie jego procesy pochodne odnosząc się do ścieżki ``/`` odnoszą się do zmienionego katalogu.
 
 Aktualny katalog *root* można sprawdzić w podsystemie *proc*.
 Dla przykładu: proces *bash*, o *pid* 8429, został uruchomiony w *chroot*.
@@ -39,8 +41,8 @@ Jak zrobić pierwszego *chroot*-a?
 Wzorem solucji do gier ze starych pism komputerowych, poprowadzę Cię "za rączkę" i stworzymy minimalnego *chroot*-a.
 Będę również pokazywał pojawiające się błędy, ponieważ ich występowanie w dużym stopniu wyjaśnia podejmowane kroki w celu stworzenia *chroot*-a.
 
-Naszym pierwszym celem, będzie uruchomienie `bash` w *chroot*-cie.
-W tym celu musimy utworzyć katalog w którym będzie nasz nowy *root*, a następnie wgrać do niego plik binarny `bash` (najlepiej do podkatalogu `bin`, dla zachowania wyglądu zwykłego *filesystem*-u.
+Naszym pierwszym celem, będzie uruchomienie ``bash`` w *chroot*-cie.
+W tym celu musimy utworzyć katalog w którym będzie nasz nowy *root*, a następnie wgrać do niego plik binarny ``bash`` (najlepiej do podkatalogu ``bin``, dla zachowania wyglądu zwykłego *filesystem*-u.
 
 .. code-block:: console
 
@@ -48,8 +50,8 @@ W tym celu musimy utworzyć katalog w którym będzie nasz nowy *root*, a nastę
    $ mkdir /tmp/first_chroot/bin
    $ cp /bin/bash /tmp/first_chroot/bin/
 
-Następnie spróbujmy uruchomić `bash`-a w *chroot*-cie.
-Aby to zrobić, należy z użytkownika *root* wykonać polecenie `chroot`, a jako argumenty przekazać: katalog na który chcemy zmienic *root*-a oraz polecenie które chcemy uruchomić.
+Następnie spróbujmy uruchomić ``bash``-a w *chroot*-cie.
+Aby to zrobić, należy z użytkownika *root* wykonać polecenie ``chroot``, a jako argumenty przekazać: katalog na który chcemy zmienic *root*-a oraz polecenie które chcemy uruchomić.
 
 .. code-block:: console
 
@@ -60,7 +62,7 @@ Otrzymaliśmy błąd, że nie ma takiego pliku ani katalogu.
 Jest to bardzo mylący błąd, ponieważ ten plik istnieje.
 
 Dokładniej o tym problemie opowiem w innym odcinku.
-Na tą chwilę musimy tylko wiedzieć, żę w nagłówkach *ELF* `bash`-a, mamy wpis dotyczący lokalizacji *INTERPRETER*-a, który ma zostać uruchomiony dla tej aplikacji
+Na tą chwilę musimy tylko wiedzieć, żę w nagłówkach *ELF* ``bash``-a, mamy wpis dotyczący lokalizacji *INTERPRETER*-a, który ma zostać uruchomiony dla tej aplikacji
 
 .. code-block:: console
 
@@ -69,14 +71,14 @@ Na tą chwilę musimy tylko wiedzieć, żę w nagłówkach *ELF* `bash`-a, mamy 
        [Requesting program interpreter: /lib/ld-linux.so.2]
 
 Jak widać, jako interpreter jest ustawiony linker.
-Ponieważ w *chroot*-cie proces jako `/` bierze katalog *chroot*-owy, dlatego musimy również skopiować linker:
+Ponieważ w *chroot*-cie proces jako ``/`` bierze katalog *chroot*-owy, dlatego musimy również skopiować linker:
 
 .. code-block:: console 
 
    $ mkdir /tmp/first_chroot/lib
    $ cp /lib/ld-linux.so.2 /tmp/first_chroot/lib/ -iv
 
-W tej chwili możemy ponownie spróbować uruchomić `bash`-a w *chroot*-cie.
+W tej chwili możemy ponownie spróbować uruchomić ``bash``-a w *chroot*-cie.
 
 .. code-block:: console 
 
@@ -109,7 +111,7 @@ Po przegraniu biblioteki, możemy ponownie spróbować przełączyć się do *ch
 
 Widzimy, że teraz występuje problem z kolejną biblioteką.
 Aby nie wgrywać po jednej bibliotece i sprawdzać jakiej jeszcze brakuje, odczytajmy wszystkie potrzebne biblioteki i wgrajmy je za jednym razem.
-Aby odczytać potrzebne biblioteki, użyjemy polecenia `ldd`
+Aby odczytać potrzebne biblioteki, użyjemy polecenia ``ldd``
 
 .. code-block:: console 
 
@@ -120,7 +122,7 @@ Aby odczytać potrzebne biblioteki, użyjemy polecenia `ldd`
        libc.so.6 => /lib/libc.so.6 (0xb7bb5000)
        /lib/ld-linux.so.2 (0xb7ee0000)
 
-Widzimy, że brakuje mam `libdl.so.2`, `libc.so.6`
+Widzimy, że brakuje mam ``libdl.so.2``, ``libc.so.6``
 
 .. code-block:: console 
 
@@ -137,12 +139,12 @@ Teraz, gdy mamy wszystkie potrzebne biblioteki, możemy w końcu uruchomić nasz
    # chroot /tmp/first_chroot/ /bin/bash
    bash-4.4#
 
-Widzimy, że została uruchomiona powłoka `bash`.
-Jednak, nie działają żadne podstawowe polecenia systemu Linux: `ls`, `mkdir`, `mount` itp.
-Jest tak dlatego, że w naszym *chroot* mamy jedynie `bash`-a.
-Działają natomiast polecenia samej powłowki: `cd`, `pwd` itp.
+Widzimy, że została uruchomiona powłoka ``bash``.
+Jednak, nie działają w niej żadne podstawowe polecenia systemu Linux: ``ls``, ``mkdir``, ``mount`` itp.
+Jest tak dlatego, że w naszym *chroot* mamy jedynie ``bash``-a.
+Działają natomiast polecenia samej powłowki: ``cd``, ``pwd`` itp.
 
-Poszerzmy teraz naszego *chroot*-a o polecenie `ls`
+Poszerzmy teraz naszego *chroot*-a o polecenie ``ls``
 
 .. code-block:: console 
 
@@ -167,8 +169,8 @@ Poszerzmy teraz naszego *chroot*-a o polecenie `ls`
    '/lib/libpthread.so' -> '/tmp/first_chroot/lib/libpthread.so'
    '/lib/libpthread.so.0' -> '/tmp/first_chroot/lib/libpthread.so.0'
 
-gdy dogramy już aplikację `ls` oraz potrzebne biblioteki, możemy wykonać w naszym *chroot* polecenie `ls`.
-Warto przed tym ustawić odpowiedni zmienna `PATH`, gdyż niekoniecznie będzie ona ustawiona na katalog `bin`
+gdy dogramy już aplikację ``ls`` oraz potrzebne biblioteki, możemy wykonać w naszym *chroot* polecenie ``ls``.
+Warto przed tym ustawić odpowiedni zmienna ``PATH``, gdyż niekoniecznie będzie ona ustawiona na katalog ``bin``
 
 .. code-block:: console 
 
@@ -217,7 +219,7 @@ Następnie możemy uruchomić naszą przykładową aplikację:
 Teraz możemy zobaczyć jaką korzyść niesie uruchomienie aplikacji w *chroot*.
 Załóżmy, że *atakujący*, wykorzystując błędy w aplikacji, przejął nad nią kontrolę i jest w stanie odczytać dowolne pliki z dysku.
 My na te potrzeby uruchomiliśmy serwer HTTP, który taką możliwość daje z założenia, ale efekt jest taki sam: klient łączący się do aplikacji ma dostęp do tych plików do których ma aplikacja.
-Łącząc się pod adres `http://127.0.0.1:8898` widzimy, że aplikacja, a co za tym idzie atakujący ma dostęp jedynie do plików umieszczonych w *chroot*
+Łącząc się pod adres ``http://127.0.0.1:8898`` widzimy, że aplikacja, a co za tym idzie atakujący ma dostęp jedynie do plików umieszczonych w *chroot*
 
 .. code-block:: console
 
@@ -255,13 +257,13 @@ Najłatwiej zrobić to poprzez utworzenie grupy użytkowników, a następnie dod
    $ useradd chroot1 -g chrooties -M
    $ passwd chroot1
 
-Warto tutaj zwrócić uwagę na parametr `-M`, który mówi, aby `useradd` nie tworzył katalogu domowego - nie będzie nam on teraz potrzebny.
+Warto tutaj zwrócić uwagę na parametr ``-M``, który mówi, aby ``useradd`` nie tworzył katalogu domowego - nie będzie nam on teraz potrzebny.
 W sytuacji w której będziemy chcieli logować się po kluczu, może się on okazać przydatny.
 Jednak w naszym przypadku zadowolimy się logowaniem hasłem.
 
 Ważną rzeczą, którą trzeba tutaj zaznaczyć, są wymagania *ssh* co do uprawnień katalogu do którego będzie robiony *chroot*.
 Z przyczyn bezpieczeństwa, *ssh* wymaga, aby cała ścieżka do katalogu była w rękach *root*-a i tylko *root*-a.
-Dlatego musimy przenieść nasz `first_chroot` poza `tmp` oraz nadać mu odpowiednie uprawnienia.
+Dlatego musimy przenieść nasz ``first_chroot`` poza ``tmp`` oraz nadać mu odpowiednie uprawnienia.
 
 .. code-block:: console
 
@@ -271,14 +273,14 @@ Dlatego musimy przenieść nasz `first_chroot` poza `tmp` oraz nadać mu odpow
 
 
 Teraz możemy skonfigurować *ssh*.
-W pliku `/etc/ssh/sshd_config` musimy dopisać sekcję dotyczącą naszych użytkowników
+W pliku ``/etc/ssh/sshd_config`` musimy dopisać sekcję dotyczącą naszych użytkowników
 
 .. code-block:: none
 
    Match Group chrooties
            ChrootDirectory /first_chroot
 
-Po wykonaniu restartu, się zalogować i wylistować katalogi
+Po wykonaniu restartu, możemy się zalogować i wylistować katalogi
 
 .. code-block:: console
 
@@ -289,7 +291,7 @@ Po wykonaniu restartu, się zalogować i wylistować katalogi
    bin  lib  tmp  usr
 
 Widzimy, że użytkownik został zamknięty w przygotowanym *chroot*.
-Teraz już tylko w gestii administratora, co będzie posiadał w tym *chroot*.
+Teraz jest już tylko w gestii administratora, co będzie posiadał w tym *chroot*.
 
 Podsumowanie
 ------------
