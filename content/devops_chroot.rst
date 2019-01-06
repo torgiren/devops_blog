@@ -6,6 +6,7 @@ Podstawy chroot
 :date: 2019-01-07
 :Status: published
 :slug: chroot-basics
+:summary: W tym poście omówię ręczne tworzenie *chroot*-a, uruchamianie w nim aplikacji a także wykorzystanie go wraz z usługą *ssh*, do ograniczania uprawnień użytkowników logujących się do serwera.
 
 W tym poście omówię ręczne tworzenie *chroot*-a, uruchamianie w nim aplikacji a także wykorzystanie go wraz z usługą *ssh*, do ograniczania uprawnień użytkowników logujących się do serwera.
 
