@@ -1,10 +1,11 @@
-Chroot
-######
+Podstawy chroot
+###############
 
 :keywords: linux, chroot, hacking
 :tags: linux, chroot, hacking
 :date: 2018-12-29
 :Status: draft
+:slug: chroot-basics
 
 W tym poście omówię ręczne tworzenie *chroot*-a, uruchamianie w nim aplikacji a także wykorzystanie go wraz z usługą *ssh*, do ograniczania uprawnień użytkowników logujących się do serwera.
 
@@ -148,14 +149,14 @@ Poszerzmy teraz naszego *chroot*-a o polecenie `ls`
    $ cp -iv /bin/ls /tmp/first_chroot/bin/
    '/bin/ls' -> '/tmp/first_chroot/bin/ls'
    $ ldd /bin/ls
-   linux-gate.so.1 (0xb7f75000)
-   libselinux.so.1 => /lib/libselinux.so.1 (0xb7f04000)
-   libcap.so.2 => /lib/libcap.so.2 (0xb7efe000)
-   libc.so.6 => /lib/libc.so.6 (0xb7d5a000)
-   libpcre2-8.so.0 => /lib/libpcre2-8.so.0 (0xb7cd3000)
-   libdl.so.2 => /lib/libdl.so.2 (0xb7cce000)
-   /lib/ld-linux.so.2 (0xb7f77000)
-   libpthread.so.0 => /lib/libpthread.so.0 (0xb7caf000)
+       linux-gate.so.1 (0xb7f75000)
+       libselinux.so.1 => /lib/libselinux.so.1 (0xb7f04000)
+       libcap.so.2 => /lib/libcap.so.2 (0xb7efe000)
+       libc.so.6 => /lib/libc.so.6 (0xb7d5a000)
+       libpcre2-8.so.0 => /lib/libpcre2-8.so.0 (0xb7cd3000)
+       libdl.so.2 => /lib/libdl.so.2 (0xb7cce000)
+       /lib/ld-linux.so.2 (0xb7f77000)
+       libpthread.so.0 => /lib/libpthread.so.0 (0xb7caf000)
    $ cp -iv /lib/libselinux.so.1 /lib/libcap.so.2* /lib/libpcre2-8.so.0* /lib/libpthread.so* /tmp/first_chroot/lib/ 
    '/lib/libselinux.so.1' -> '/tmp/first_chroot/lib/libselinux.so.1'
    '/lib/libcap.so.2' -> '/tmp/first_chroot/lib/libcap.so.2'
@@ -181,7 +182,7 @@ Tak przygotowany *chroot* zapewnia nam izolację procesów w nim uruchomionych o
 Uruchamianie aplikacji w *chroot*
 ---------------------------------
 
-Jak przykładową aplikację, uruchomimy sobie wbudowany w *python*-a 3 server HTTP.
+Jako przykładową aplikację, uruchomimy sobie wbudowany w *python*-a 3 server HTTP.
 Aby to zrobić, wkopiujemy plik binarny, potrzebne biblioteki systemowe oraz wszystkie pliki interpretera *python* (wartym rozważenia rozwiązaniem jest również instalacja danej aplikacji w odpowiednich katalogach, zamiast kopiowanie plików)
 
 .. code-block:: console
