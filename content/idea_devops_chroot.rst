@@ -241,3 +241,57 @@ My na te potrzeby uruchomiliśmy serwer HTTP, który taką możliwość daje z 
    </html>
 
 Oznacza to, że w przypadku kompromitacji jednej aplikacji, nie następuje kompromitacja pozostałych uruchomionych tam aplikacji jak również samego systemu.
+
+Zamykanie zdalnych użytkowników w *chroot*
+------------------------------------------
+
+Częstą praktyką jest również zamykanie zdalnych użytkowników w *chroot*-ach.
+Najłatwiej zrobić to poprzez utworzenie grupy użytkowników, a następnie dodawania kolejnych do tejże grupy.
+
+.. code-block:: console
+
+   $ groupadd chrooties
+   $ useradd chroot1 -g chrooties -M
+   $ passwd chroot1
+
+Warto tutaj zwrócić uwagę na parametr `-M`, który mówi, aby `useradd` nie tworzył katalogu domowego - nie będzie nam on teraz potrzebny.
+W sytuacji w której będziemy chcieli logować się po kluczu, może się on okazać przydatny.
+Jednak w naszym przypadku zadowolimy się logowaniem hasłem.
+
+Ważną rzeczą, którą trzeba tutaj zaznaczyć, są wymagania *ssh* co do uprawnień katalogu do którego będzie robiony *chroot*.
+Z przyczyn bezpieczeństwa, *ssh* wymaga, aby cała ścieżka do katalogu była w rękach *root*-a i tylko *root*-a.
+Dlatego musimy przenieść nasz `first_chroot` poza `tmp` oraz nadać mu odpowiednie uprawnienia.
+
+.. code-block:: console
+
+   $ mv /tmp/first_chroot/ /
+   # chown root:root /first_chroot/
+   # chmod 755 /first_chroot/
+
+
+Teraz możemy skonfigurować *ssh*.
+W pliku `/etc/ssh/sshd_config` musimy dopisać sekcję dotyczącą naszych użytkowników
+
+.. code-block:: none
+
+   Match Group chrooties
+           ChrootDirectory /first_chroot
+
+Po wykonaniu restartu, się zalogować i wylistować katalogi
+
+.. code-block:: console
+
+   $ ssh chroot1@localhost
+   chroot1@localhost's password: 
+   Last login: Sun Jan  6 08:25:41 2019 from 127.0.0.1
+   -bash-4.4$ /bin/ls
+   bin  lib  tmp  usr
+
+Widzimy, że użytkownik został zamknięty w przygotowanym *chroot*.
+Teraz już tylko w gestii administratora, co będzie posiadał w tym *chroot*.
+
+Podsumowanie
+------------
+
+Pokazaliśmy sobie czym jest *chroot*, jak go utworzyć, jak uruchomić w nim aplikację oraz zamknąć *użyszkodników*.
+Zachęcam do zadawania pytań oraz komentowania pod filmem na yt.
