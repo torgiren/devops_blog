@@ -25,7 +25,11 @@ LINKS = None
 
 # Social widget
 SOCIAL = (
-          ('YouTube TORGiren DevOpses', 'https://www.youtube.com/channel/UC_WIjAwEBoM5zvLQdbLrp7A'),
+          ("<img width='auto' style='height:0.8em;' alt='YouTube logo' src='/images/youtube/youtube_social_icon_red.png'/> TORGiren DevOpses", "https://www.youtube.com/channel/UC_WIjAwEBoM5zvLQdbLrp7A"),
+          ("TORGiren GitHub", "https://github.com/torgiren"),
+          ("TORGiren StackOverflow", "https://stackoverflow.com/users/1234218/marcin-fabrykowski"),
+          ("TORGiren ServerFault", "https://serverfault.com/users/185210/marcin-fabrykowski"),
+          ("<img width='auto' style='height:0.8em;' alt='YouTube logo' src='/images/youtube/youtube_social_icon_red.png'/> TORGiren Plays", "https://www.youtube.com/channel/UC068mJpuvsuAyTXC0WrzSkw"),
          )
 
 DEFAULT_PAGINATION = 10
@@ -88,3 +92,6 @@ EXTRA_PATH_METADATA = {
 
 IMAGE_PATH = 'images'
 THUMBNAIL_DIR = 'thumbs'
+
+DISPLAY_PAGES_ON_MENU = True
+GITHUB_URL = "https://github.com/torgiren/devops_blog"
