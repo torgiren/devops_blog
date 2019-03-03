@@ -14,6 +14,8 @@ Tym samym chcę pokazać, dlaczego nie należy przyznawać praw administratora u
 Crash course
 ------------
 
+{% youtube TQRcC2OEHn8 320 180 %}
+
 Ponieważ *docker* (podobnie jak większość technologi kontenerowych) używa *chroot*-a, wyjście z *chroot* czy *docker* sprowadza się do tej samej metody.
 Poniższa metoda wymaga posiadania konta *root* w kontenerze uruchomionego z uprawnieniami *privileged* (w przypadku *docker*)
 
@@ -26,6 +28,8 @@ Poniższa metoda wymaga posiadania konta *root* w kontenerze uruchomionego z upr
 
 Analiza metody
 --------------
+
+{% youtube CVRyg4fYdq4 320 180 %}
 
 Metoda ta wykorzystuje *chroot* do *filesystem*-u systemu głównego.
 Ponieważ w *chroot* najczęściej nie mamy zamontowanego katalogu ``/dev/``, a tym samym, nie możemy zamontować *filesystem*-u nadzorcy, musimy samodzielnie utworzyć urządzenie odpowiadające dyskowi z tymże *filesystem*-em.
