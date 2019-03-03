@@ -3,7 +3,7 @@ Hacking the chroot/docker
 
 :keywords: linux, chroot, hacking, docker
 :tags: linux, chroot, hacking, docker
-:date: 2019-01-19
+:date: 2019-03-03
 :Status: draft
 :slug: chroot-breaking-1
 :lang: en
@@ -14,7 +14,7 @@ With that, I want to show you, why you should never give root access to users in
 Crash course
 ------------
 
-{% youtube TQRcC2OEHn8 320 180 %}
+.. youtube:: TQRcC2OEHn8
 
 Because *docker* (like most of container technologies) uses *chroot*, exiting a *chroot* or *docker* will use the same technique.
 Presented method need root access in docker run as *privileged* (in case you use docker).
@@ -29,7 +29,7 @@ Presented method need root access in docker run as *privileged* (in case you use
 Method description
 ------------------
 
-{% youtube CVRyg4fYdq4 320 180 %}
+.. youtube:: CVRyg4fYdq4
 
 This method uses *chroot* to the supervisor's *filesystem*.
 Usually, we don't have ``/dev/`` directory in *chroot*, so we cannot mount host *filesystem* and we have to create special device file manually.
