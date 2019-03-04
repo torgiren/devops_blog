@@ -3,8 +3,8 @@ Hacking the chroot/docker
 
 :keywords: linux, chroot, hacking, docker
 :tags: linux, chroot, hacking, docker
-:date: 2019-03-03
-:Status: draft
+:date: 2019-03-04
+:Status: published
 :slug: chroot-breaking-1
 :lang: en
 
