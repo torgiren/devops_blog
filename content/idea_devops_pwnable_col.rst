@@ -9,6 +9,9 @@ col - pwnable.kr
 
 W tym poście rozwiążemy sobie zadanie ``col`` ze strony `pwnable`_.
 
+Analiza wstępna
+---------------
+
 Aby zalogować się do zadania wykonujemy:
 
 .. code-block:: console
@@ -95,5 +98,70 @@ Aby wiedzieć jaki rozmiar ma zmienna typu ``int``, należy sprawdzić jak zosta
 Widzimy, że ``col`` jest aplikacją 32-bitową, a to znaczy, że najprawdopodobniej zmienna typu ``int`` będzie miała rozmiar 32 bitów, czyli 4 bajtów.
 
 Wynika z tego, że 20 bajtowy ciąg znaków, będący argumentem funkcji ``check_password``, może zostać zinterpretowany jako pięć 4-bajtowych wartości typu ``int``.
+
+Dodatkowo, należy sprawdzić w jakiej konwencji są zapisywane bity w pamięci.
+Osobiście nie spotkałem się z konwencją *big endian* w aplikacjach, lecz aby zrobić wszystko po kolei, należy sprawdzić użytą konwencję:
+
+.. code-block:: console
+
+   col@ubuntu:~$ readelf col -h
+   ELF Header:
+     Magic:   7f 45 4c 46 01 01 01 00 00 00 00 00 00 00 00 00
+     Class:                             ELF32
+     Data:                              2's complement, little endian
+     Version:                           1 (current)
+     OS/ABI:                            UNIX - System V
+     ABI Version:                       0
+     Type:                              EXEC (Executable file)
+     Machine:                           Intel 80386
+     Version:                           0x1
+     Entry point address:               0x80483e0
+     Start of program headers:          52 (bytes into file)
+     Start of section headers:          4428 (bytes into file)
+     Flags:                             0x0
+     Size of this header:               52 (bytes)
+     Size of program headers:           32 (bytes)
+     Number of program headers:         9
+     Size of section headers:           40 (bytes)
+     Number of section headers:         30
+     Section header string table index: 27
+
+Widzimy, że została zastosowana ``little endian``.
+Więcej o ``little endian`` możesz przeczytać/obejrzeć tutaj <TODO!!!!!!!>
+
+Exploit
+-------
+
+Aby warunek poprawności hasła został spełniony, suma 5 liczb całkowitych otrzymanych z podanego *string*-a musi być równa ``0x21DD09EC``.
+Jednym ze sposobów aby to osiągnąć, jest znalezienie znalezienie 5 liczb których suma da taką wartość, a następnie zapisanie ich w postaci pojedynczych bajtów.
+
+W celu poszukiwania liczb użyjemy pythona, gdyż dobrze sprawdza się jako kalkulator.
+na początku próbujemy podzielić szukaną liczbę przez 5, a gdy to się nie uda, to szukamy największej liczby, mniejszej od naszego wyniku, która będzie podzielna przez 5
+
+.. code-block:: python
+
+   >>> 0x21DD09EC/5.0
+   113626824.8
+   >>> 0x21DD09EC - 5 * 113626824
+   4
+   >>> hex(113626824)
+   '0x6c5cec8'
+   >>> hex(0x6c5cec8 + 4)
+   '0x6c5cecc'
+   >>> 4 * 0x6c5cec8 + 0x6c5cecc ==  0x21DD09EC
+   True
+
+Z powyższego widzimy, że potrzebujemy przekazać cztery wartości ``0x6c5cec8`` oraz jedną o ``4`` większą, czyli ``0x6c5cecc`` .
+
+Ponieważ aplikacja jest w konwencji *little endian*, bajty należy podawać od końca (więcej o tym można przeczytać TUTAJ!!! TODO)
+
+Aby wypisać konkretne bity, użyjemy ``echo`` z ``bash`` i podamy bajty *od tył* i przekażemy wynik do aplikacji ``col``, jako pierwszy argument.
+
+.. code-block:: console
+
+   col@ubuntu:~$ ./col $(echo -ne "\xc8\xce\xc5\x06\xc8\xce\xc5\x06\xc8\xce\xc5\x06\xc8\xce\xc5\x06\xcc\xce\xc5\x06")
+   daddy! I just managed to create a hash collision :)
+
+I otrzymaliśmy szukaną flagę.
 
 .. _pwnable: https://pwnable.kr
