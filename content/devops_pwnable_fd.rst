@@ -3,11 +3,13 @@ fd - pwnable.kr
 
 :keywords: linux, ctf, hacking, pwn, pwnable
 :tags: linux, ctf, hacking. pwn, pwnable
-:date: 2019-03-11
-:Status: draft
+:date: 2019-06-02
+:Status: published
 :slug: pwnable-fd
 
 W tym poście rozwiążemy sobie zadanie ``fd`` ze strony `pwnable`_.
+
+.. youtube:: EtMYdsvIRmo
 
 Aby zalogować się do zadania wykonujemy:
 
