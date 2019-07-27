@@ -4,23 +4,26 @@ col - pwnable.kr
 :keywords: linux, ctf, hacking, pwn, pwnable
 :tags: linux, ctf, hacking. pwn, pwnable
 :date: 2019-03-11
-:Status: draft
+:Status: published
 :slug: pwnable-col
+:lang: en
 
-W tym poście rozwiążemy sobie zadanie ``col`` ze strony `pwnable`_.
+Today we're going to solve collision task from `pwnable`_.
 
-Analiza wstępna
----------------
+.. youtube:: hHwLdkF9j_Y
 
-Aby zalogować się do zadania wykonujemy:
+Analysis
+--------
+
+We can log in by ssh:
 
 .. code-block:: console
 
    $ ssh col@pwnable.kr -p2222
 
-a jako hasło podajemy ``guest``.
+with password ``guest``.
 
-Po zalogowaniu się widzimy 3 pliki
+After log in, we can see three files:
 
 .. code-block:: console
 
@@ -30,20 +33,17 @@ Po zalogowaniu się widzimy 3 pliki
    -rw-r--r-- 1 root    root     555 Jun 12  2014 col.c
    -r--r----- 1 col_pwn col_pwn   52 Jun 11  2014 flag
 
+flag is located in ``flag`` file, but we cannot read it.
+We can run ``col`` with has ``suid`` flag set and it can read the flag.
 
-flaga znajduje się w pliku ``flag``, natomiast nie mamy do niego dostępu.
-Mamy natomiast możliwość wykonania programu ``col``, który ma ustawiony ``suid`` pozwalający na odczyt flagi.
-
-Uruchomienie aplikacji daje następujące wyjście:
+When we run ``col``:
 
 .. code-block:: console
 
    fd@ubuntu:~$ ./col
    usage : ./col [passcode]
 
-
-Dlatego sprawdźmy co robi ta aplikacja.
-Kod programu znajduje się w pliku ``col.c``
+Let's take a look at the source code:
 
 .. code-block:: c
    :linenos:
@@ -80,27 +80,26 @@ Kod programu znajduje się w pliku ``col.c``
    	return 0;
    }
 
-Patrząc na linie 15-22 widzimy, że aplikacja oczekuje co najmniej jednego argumentu oraz że pierwszy argument będzie miał długość dokładnie 20 znaków.
+In lines 15-22 we can see, that application expect user to provide one argument with length of 20 bytes.
 
-Następnie w linii 25 widzimy, że wynik funkcji ``check_password`` uruchomiony z podanych przez nas argumentem, musi być równy globalnej zmiennej ``hashcode`` równej ``0x21DD09EC``.
+Next, in line 24, we can see, that result of function ``check_password`` with provided argument has to be equal ``hashcode`` with value ``0x21DD09EC``.
 
-Głównym celem tego zadania jest analiza funkcji ``check_password`` oraz znalezienie takiego argumentu ``p``, aby wynik równy był ``0x21DD09EC``.
+The main goal of this task is to analyze ``check_password`` function and find value of argument ``p``, which will produce value ``0x21DD09EC``.
 
-Funkcja ``check_password`` interpretuje podany 20-bajtowy ciąg znaków, jako zmienne typu ``int``.
+Function ``check_password`` interpret 20 bytes char table as table of integer values.
 
-Aby wiedzieć jaki rozmiar ma zmienna typu ``int``, należy sprawdzić jak została skompilowana aplikacja.
+We have to find the size of ``int`` integer to know how many integers are in table.
 
 .. code-block:: console
 
    col@ubuntu:~$ file col
    col: setuid ELF 32-bit LSB executable, Intel 80386, version 1 (SYSV), dynamically linked, interpreter /lib/ld-linux.so.2, for GNU/Linux 2.6.24, BuildID[sha1]=05a10e253161f02d8e6553d95018bc82c7b531fe, not stripped
 
-Widzimy, że ``col`` jest aplikacją 32-bitową, a to znaczy, że najprawdopodobniej zmienna typu ``int`` będzie miała rozmiar 32 bitów, czyli 4 bajtów.
+We can see, that this is a 32-bit application, so most likely integer has 32 bits size, so 4 bytes.
 
-Wynika z tego, że 20 bajtowy ciąg znaków, będący argumentem funkcji ``check_password``, może zostać zinterpretowany jako pięć 4-bajtowych wartości typu ``int``.
+There we can calculate, that 20 bytes string with be interpreted as 5 elements integer array.
 
-Dodatkowo, należy sprawdzić w jakiej konwencji są zapisywane bity w pamięci.
-Osobiście nie spotkałem się z konwencją *big endian* w aplikacjach, lecz aby zrobić wszystko po kolei, należy sprawdzić użytą konwencję:
+Next, we have to check bit numbering.
 
 .. code-block:: console
 
@@ -126,17 +125,18 @@ Osobiście nie spotkałem się z konwencją *big endian* w aplikacjach, lecz ab
      Number of section headers:         30
      Section header string table index: 27
 
-Widzimy, że została zastosowana ``little endian``.
-Więcej o ``little endian`` możesz przeczytać/obejrzeć tutaj <TODO!!!!!!!>
+As we can see, there is ``little endian``.
 
 Exploit
 -------
 
-Aby warunek poprawności hasła został spełniony, suma 5 liczb całkowitych otrzymanych z podanego *string*-a musi być równa ``0x21DD09EC``.
-Jednym ze sposobów aby to osiągnąć, jest znalezienie znalezienie 5 liczb których suma da taką wartość, a następnie zapisanie ich w postaci pojedynczych bajtów.
+To solve this task, we have to provide such string, that sum of 5 integer from that string will be equal to ``0x21DD09EC``.
+To do so, we have to find 5 values witch sum will be ``0x21DD09EC`` and then write them up as a list of bytes.
 
-W celu poszukiwania liczb użyjemy pythona, gdyż dobrze sprawdza się jako kalkulator.
-na początku próbujemy podzielić szukaną liczbę przez 5, a gdy to się nie uda, to szukamy największej liczby, mniejszej od naszego wyniku, która będzie podzielna przez 5
+I will use a python as a calculator.
+
+First, let's divide result by 5, and find the flor of that number.
+Then find the fifth number remainders.
 
 .. code-block:: python
 
@@ -151,17 +151,17 @@ na początku próbujemy podzielić szukaną liczbę przez 5, a gdy to się nie 
    >>> 4 * 0x6c5cec8 + 0x6c5cecc ==  0x21DD09EC
    True
 
-Z powyższego widzimy, że potrzebujemy przekazać cztery wartości ``0x6c5cec8`` oraz jedną o ``4`` większą, czyli ``0x6c5cecc`` .
+As we can see, we have to pass ``0x6c5cec8`` four times, and ``0x6c5cecc`` one time
 
-Ponieważ aplikacja jest w konwencji *little endian*, bajty należy podawać od końca (więcej o tym można przeczytać TUTAJ!!! TODO)
+Because bytes are interpreted as little endian, we have to pass then in reverse order.
 
-Aby wypisać konkretne bity, użyjemy ``echo`` z ``bash`` i podamy bajty *od tył* i przekażemy wynik do aplikacji ``col``, jako pierwszy argument.
+We will use bash to echo hexadecimal values
 
 .. code-block:: console
 
    col@ubuntu:~$ ./col $(echo -ne "\xc8\xce\xc5\x06\xc8\xce\xc5\x06\xc8\xce\xc5\x06\xc8\xce\xc5\x06\xcc\xce\xc5\x06")
    daddy! I just managed to create a hash collision :)
 
-I otrzymaliśmy szukaną flagę.
+And we've got a flag
 
 .. _pwnable: https://pwnable.kr
