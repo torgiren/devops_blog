@@ -8,6 +8,7 @@ col - pwnable.kr
 :slug: pwnable-col
 
 W tym poście rozwiążemy sobie zadanie ``col`` ze strony `pwnable`_.
+
 .. youtube:: GbBjoZ3SR28
 
 Analiza wstępna
