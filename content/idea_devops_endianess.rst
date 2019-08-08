@@ -140,3 +140,21 @@ i interpretacja:
 
   ``(0x48) (0x47) (0x46) (0x45) (0x44) (0x43) (0x42) (0x41)``
 
+
+Przykład
+--------
+
+W zadaniu `col`_ musieliśmy skonstruować liczbę całkowitą, mając jedynie możliwość wprowadzenia wejścia w postaci łańcucha znaków.
+
+Oczekiwaną wartością była liczba ``0x6c5cec8``, a zapis był możliwy za pośrednictwem tablicy znaków, czyli po bajcie.
+Dlatego musimy wiedzieć, jak zostanie w pamięci zapisana szukana liczba.
+
+``0x6c5cec8`` zostanie zapisana jako poniższy ciąg bajtów:
+
+  ``(0xc8) (0xce) (0xc5) (0x06)``
+
+dlatego, aby należało przekazać następującą sekwencję
+
+  ``$ echo -ne "\xc8\xce\xc5\x06"``
+
+.. _col: /pwnable-col.html
