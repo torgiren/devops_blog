@@ -4,11 +4,13 @@ Jak to jest z tym little-endian
 :keywords: linux, hacking, little-endian, memory
 :tags: linux, hacking, little-endian, memory
 :date: 2019-07-29
-:Status: draft
+:Status: published
 :slug: little-endian
 :lang: pl
 
 W tym poście postaram się opowiedzieć trochę o kolejności bitów w pamięci.
+
+.. youtube:: HL_S6MZBm0Q
 
 Zacznijmy od trzęsienia ziemi
 -----------------------------
