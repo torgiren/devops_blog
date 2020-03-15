@@ -56,9 +56,9 @@ Zeros are mostly used while creating files which should be allocated immediately
 /dev/random and /dev/urandom
 ----------------------------
 
-``/dev/random`` and ``/dev/urandom`` devices return random data from kernel entropy pool, but they differ in their behavior in case of emptying pool.
-In case of ``/dev/random``, read operation is being blocked until new random data will be generated, while ``/dev/urandom`` will generate pseudorandom data and return them immediately.
-So ``/dev/urandom`` device is used more often, because it is never blocked, but ``/dev/random`` is recommended when data has to be truly random and won't be vulnerable to RNG attacks. Ex. while generating private keys and other security data.
+``/dev/random`` and ``/dev/urandom`` devices return random data from kernel entropy pool, but they differ in their behavior in case of an emptying pool.
+In the case of ``/dev/random``, read operation is being blocked until new random data will be generated, while ``/dev/urandom`` will generate pseudorandom data and return them immediately.
+So ``/dev/urandom`` device is used more often because it is never blocked, but ``/dev/random`` is recommended when data has to be truly random and won't be vulnerable to RNG attacks. Ex. while generating private keys and other security data.
 
 The current available entropy size in poll is stored in ``/proc/sys/kernel/random/entropy_avail`` file
 
@@ -91,19 +91,19 @@ Data from these devices can be read like any other binary file:
   64+0 zapisanych rekordów
   skopiowane 64 bajty, 0,00020758 s, 308 kB/s
 
-It often happens, that some application needs a large amount of random data from ``/dev/random``, what leads to slow down it performance.
+It often happens, that some application needs a large amount of random data from ``/dev/random``, which leads to slow down its performance.
 In that situation, we can use ``rngd``, which will fill entropy pool with data from hardware random number generator (if it is present)
 
 /dev/full
 ---------
 
 Last, but not least device that will be shown in this post is ``/dev/full``.
-This is probably the most common device from presented today.
+This is probably the most common device presented today.
 
-When reading from device it will return no data.
+When reading from the device it will return no data.
 
-But, when we try to write anything, it will return ``ENOSPC`` error, which means that there is no free space on volume.
-This is usually used while testing application's error handling in case of running out of space.
+But, when we try to write anything, it will return ``ENOSPC`` error, which means that there is no free space on the volume.
+This is usually used while testing the application's error handling in case of running out of space.
 
 .. code:: console
 
