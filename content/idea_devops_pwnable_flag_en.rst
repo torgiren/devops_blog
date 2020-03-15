@@ -25,7 +25,7 @@ if we try to disassemble this application using ``objdump``, we can see that it 
    flag:     file format elf64-x86-64
 
 That could mean that the file is corrupted or it was packed by some *packer*.
-One of the methods to find if there was used any *packer* is look for string *pack* in the file
+One of the methods to find if there was used any *packer* is to look for string *pack* in the file
 
 .. code-block:: console
 
