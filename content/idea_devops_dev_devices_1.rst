@@ -7,13 +7,7 @@ Common /dev/ devices
 :Status: draft
 :slug: dev-devices
 
-/dev/null
-/dev/full
-/dev/zero
-/dev/random
-/dev/urandom
-
-W tym poście przedstawię kilka urządzeń systemu GNU/Linuks, których znajomość jest przydatna w pracy administratora systemu.  
+W tym poście przedstawię kilka urządzeń systemu GNU/Linux, których znajomość jest przydatna w pracy administratora systemu.
 
 Wstęp
 -----
@@ -25,7 +19,7 @@ Ja skupię się na tych, które uważam za najczęściej używane.
 /dev/null
 ---------
 
-Chyba jedno z najczęściej używanych urządzeń urządzeń jest ``/dev/null``. Jest to urządzenie, które jest puste, a to znaczy, że przy próbie odczytu z niego, nie otrzymamy żadnych danych:
+Chyba jedno z najczęściej używanych urządzeń urządzeń jest ``/dev/null``. Jest to urządzenie które jest puste, a to znaczy, że przy próbie odczytu z niego, nie otrzymamy żadnych danych:
 
 .. code:: console
 
@@ -48,7 +42,7 @@ Najczęstszym przypadkiem użycia tego urządzenia, jest zapis do niego danych, 
 ---------
 
 Urządzenie ``/dev/zero``, jak sama nazwa wskazuje, zwraca zawsze zero.  Zwykle się z niego tylko odczytuje.
-Zera są najczęściej używane, przy tworzeniu plików, które chcemy, aby były od razu zaalokowane (w przeciwieństwie do polecenia ``truncate``).
+Zera są najczęściej używane przy tworzeniu plików, które chcemy aby były od razu zaalokowane (w przeciwieństwie do polecenia ``truncate``).
 
 .. code:: console
 
@@ -61,10 +55,10 @@ Zera są najczęściej używane, przy tworzeniu plików, które chcemy, aby był
 /dev/random oraz /dev/urandom
 -----------------------------
 
-Urządzenia ``/dev/random`` oraz ``/dev/urandom`` zwraca losowe dane ze specjalnej puli losowych danych w jądrze.  
+Urządzenia ``/dev/random`` oraz ``/dev/urandom`` zwracają losowe dane ze specjalnej puli losowych danych w jądrze.
 Różnią się one zachowaniem w przypadku wyczerpania puli losowych danych.  
 W przypadku ``/dev/random``, odczyt zostaje zablokowany do czasu pojawienia się nowych danych, natomiast ``/dev/urandom`` generuje liczby pseudolosowe.  
-Dlatego, zwykle używane jest urządzenie ``/dev/urandom``, gdyż odczyt nigdy nie jest blokowany, natomiast ``/dev/random`` zalecane jest, gdy generowane dane muszą mieć duży współczynnik losowości i aby nie było możliwe przeprowadzenie ataku na generator liczb pseudolosowych.
+Dlatego zwykle używane jest urządzenie ``/dev/urandom``, gdyż odczyt nigdy nie jest blokowany, natomiast ``/dev/random`` zalecane jest, gdy generowane dane muszą mieć duży współczynnik losowości i aby nie było możliwe przeprowadzenie ataku na generator liczb pseudolosowych.
 Taką sytuacje mamy w przypadku generowania kluczy oraz innych danych związanych z bezpieczeństwem.
 
 Aktualny stan wypełnienia puli danych losowych możemy sprawdzić w pliku ``/proc/sys/kernel/random/entropy_avail``
