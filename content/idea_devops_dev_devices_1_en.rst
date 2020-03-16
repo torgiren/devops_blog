@@ -10,6 +10,8 @@ Common /dev/ devices
 
 In this post, I will show you a few GNU/Linux devices, which could be useful for SysOps.
 
+.. youtube:: k0_-xWhl6sk
+
 Preface
 -------
 

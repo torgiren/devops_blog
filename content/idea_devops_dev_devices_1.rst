@@ -9,6 +9,8 @@ Common /dev/ devices
 
 W tym poście przedstawię kilka urządzeń systemu GNU/Linux, których znajomość jest przydatna w pracy administratora systemu.
 
+.. youtube:: 7H99VwPUb9s
+
 Wstęp
 -----
 
