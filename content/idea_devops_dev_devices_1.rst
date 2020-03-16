@@ -12,7 +12,7 @@ W tym poście przedstawię kilka urządzeń systemu GNU/Linux, których znajomo�
 Wstęp
 -----
 
-Wszystko specjalne pliki urządzeń obsługiwane przez jądro są opisane w źródłach jądra w pliku `<https://github.com/torvalds/linux/blob/master/Documentation/admin-guide/devices.txt/>`_.
+Wszystkie specjalne pliki urządzeń obsługiwane przez jądro są opisane w źródłach jądra w pliku `<https://github.com/torvalds/linux/blob/master/Documentation/admin-guide/devices.txt/>`_.
 
 Ja skupię się na tych, które uważam za najczęściej używane.
 
