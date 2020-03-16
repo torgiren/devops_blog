@@ -4,7 +4,7 @@ Common /dev/ devices
 :keywords: linux, dev, kernel
 :tags: linux, dev, kernel
 :date: 2019-12-15
-:Status: draft
+:status: published
 :slug: dev-devices
 :lang: en
 
