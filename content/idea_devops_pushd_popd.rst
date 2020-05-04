@@ -1,10 +1,10 @@
 Pushd/Popd
 ######################################
 
-:keywords: linux, devops
-:tags: linux, devops
+:keywords: linux, devops, bash, stack
+:tags: linux, devops, bash, stack
 :status: draft
-:sllug: pushd
+:slug: pushd
 :date: 2020-04-18
 
 W tym poście pokażę jak działają bashowe polecenia ``pushd`` oraz ``popd``.
@@ -195,7 +195,7 @@ Kierunek oraz krok o jaki zostanie przesunięty stos, podaje się jako argument 
    torgiren@redraptor /tmp/pushd/a3 $ pushd +1
    /tmp/pushd/a1 /tmp/pushd/a2 /tmp/pushd/a3
 
-Przedostatnią rzeczą, jaką zrobić ze stosem, to zdejmowanie z niego wybranych elementów.
+Przedostatnią rzeczą, jaką można zrobić ze stosem, to zdejmowanie z niego wybranych elementów.
 Ponieważ ``popd`` pozwala zdjąć nie tylko najwyższy, ale również dowolny inny element.
 Określenie, który element ma zostać usunięty jest podawane jako argument numeryczny poprzedzony znakiem ``+`` bądź ``-`` określający, czy liczymy elementy od wierzchu czy od spodu stosu.
 Dla przykładu, usuńmy ze stosu elementy ``a5``, ``a15``, ``a20``, ``a1``, ``a19``.
