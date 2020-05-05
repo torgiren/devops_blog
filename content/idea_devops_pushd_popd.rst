@@ -100,7 +100,7 @@ Jak wiemy, operacja ``cd`` zmienia tylko najwyższy element, dlatego na pozycji 
 Po skończonej pracy w katalogach ``/etc``, po wpisaniu ``popd`` ściągam aktualny katalog i pozycja 1 staje się pozycją 0, czyli wracamy do katalogu ``/tmp``.
 Jest to ulepszona wersja ``cd -``, gdyż ``cd -`` pozwala wrócić tylko do poprzedniego katalogu, natomiast użycie stosu pozwala na dokonanie dowolnej liczby przejść pomiędzy katalogami a następnie powrót do zapamiętanej pozycji.
 
-Polecenie ``pushd`` posiada również możliwość odkładania katalogów na stos bez zmiany aktualnego katalogu.
+Użycie polecenia ``pushd -n`` daje możliwość odkładania katalogów na stos bez zmiany aktualnego katalogu.
 Są one wtedy odkładane na pozycję 1.
 
 .. code-block:: console

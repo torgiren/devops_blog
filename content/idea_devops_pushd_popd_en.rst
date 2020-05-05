@@ -70,7 +70,7 @@ Next, let's try to pop the top element:
 
 what happened here...
 
-``popd`` command pooped the top element, that's why the second element became the top element and that changed current directory to ``/tmp``.
+``popd`` command popped the top element, that's why the second element became the top element and that changed current directory to ``/tmp``.
 
 With this knowledge, we can move to real-life example (one of the two I use most often)
 
@@ -101,7 +101,7 @@ As we know, ``cd`` change only the top element, what that's why there's ``/tmp``
 After finishing work in ``/etc`` directories, I used ``popd`` to pop the top element, and position 1 became position 0, so I backed to the ``/tmp`` directory.
 It's the improved version of ``cd -``, because ``cd -`` allows to back only to the last directory and using stack allows to make any number of dir changes and then back to remembered position.
 
-We can also use ``pushd`` to add items on the stack without changing the current directory.
+We can also use ``pushd -n`` to add items on the stack without changing the current directory.
 It is added to the second position then.
 
 .. code-block:: console
