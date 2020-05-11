@@ -3,27 +3,28 @@ Pushd/Popd
 
 :keywords: linux, devops, bash, stack
 :tags: linux, devops, bash, stack
-:status: draft
+:status: published
 :slug: pushd
-:date: 2020-04-18
+:lang: en
+:date: 2020-05-11
 
-W tym poście pokażę jak działają bashowe polecenia ``pushd`` oraz ``popd``.
+In this post, I will show bash commands ``pushd`` and ``popd``.
 
-.. youtube:: fBSiKWqd94s
+.. youtube:: 1bGq9bYbzyI
 
-Powłoka ``bash`` posiada pewną funkcjonalność, która nie jest powszechnie znana - tą funkcjonalnością jest stos katalogów.
+`Bash` shell has one functionality that is not widely known - this functionality is directory stack.
 
-Jak sama nazwa wskazuje, jest to stos na którym odkładane są ścieżki do katalogów, a na jego szczycie znajduje się aktualny katalog.
+As the name suggests, it's a stack where one can store directories, and on top of that stack is stored current directory.
 
-Zanim przejdziemy do zastosowań, poznajmy trzy polecenia służące do obsługi tego stosu:
+Before we learn how this stack works, let's take a look at the commands to operate it:
 
-- ``pushd`` - służy do dodawania katalogu na stos
-- ``popd`` - służy do zdejmowania katalogu ze stosu
-- ``dirs`` - służy do wypisywania aktualnego stanu stosu
+- ``pushd`` - is used for adding directories to the stack
+- ``popd`` - is used for removing directories from the stack
+- ``dirs`` - is used for displaying directories on the stack
 
-Sposobu działania każdego z powyższych poleceń będziemy uczyć się na przykładach :)
+We're going to learn how to use stack but examples :)
 
-Na początku wypiszmy sobie aktualny stan stosu:
+First, let's display the current stack content:
 
 .. code-block:: console
 
@@ -33,9 +34,9 @@ Na początku wypiszmy sobie aktualny stan stosu:
    torgiren@redraptor /tmp $ dirs -v
     0  /tmp
 
-Widzimy, że polecenie ``dirs -v`` wypisuje aktualny stan stosu, który domyślnie zwiera tylko jedną pozycję - aktualny katalog
+We can see, that ``dirs -v`` prints out the content of the stack, which but the default has only one item - current directory
 
-Następnie dodajmy jakiś katalog na wierzch stosu:
+Next, let's add some directory on top of the stack
 
 .. code-block:: console
 
@@ -45,11 +46,11 @@ Następnie dodajmy jakiś katalog na wierzch stosu:
     0  /proc
     1  /tmp
 
-Widzimy, że katalog ``/proc`` został dodany na wierzch stosu, natomiast ``/tmp`` znajduje się na drugiej pozycji.
-Widzimy również, że aktualny katalog zmienił się na ``/proc``.
-Jak wspomniałem wcześniej, aktualny katalog to ten który znajduje się na wierzchu stosu, dlatego dodając ``/proc`` zmieniliśmy również aktualny katalog
+We can see, that ``/proc`` directory was added on top and ``/tmp`` was moved to the second position.
+Also, the current directory was changed to ``/proc``.
+As I said before, the current directory is on top of the stack, that's why adding ``/proc`` on top we changed the current directory
 
-Po zmianie katalogu metodą tradycyjną, czyli ``cd``, zauważamy, że:
+After the traditional change directory, we can see that:
 
 .. code-block:: console
 
@@ -58,9 +59,9 @@ Po zmianie katalogu metodą tradycyjną, czyli ``cd``, zauważamy, że:
     0  /sys
     1  /tmp
 
-najwyższy element uległ zmianie.
+the top element was changed
 
-Następnie, spróbujmy zdjąć ze stosu najwyższy element:
+Next, let's try to pop the top element:
 
 .. code-block:: console
 
@@ -69,11 +70,11 @@ Następnie, spróbujmy zdjąć ze stosu najwyższy element:
    torgiren@redraptor /tmp $ dirs -v
     0  /tmp
 
-co tu się stało...
+what happened here...
 
-Polecenie ``popd`` zdjęło ze stosu najwyższy element, dlatego nowym najwyższym elementem stał się katalog ``/tmp`` co poskutkowało zmianą bieżącego katalogu właśnie na ``/tmp``
+``popd`` command popped the top element, that's why the second element became the top element and that changed current directory to ``/tmp``.
 
-Z tą wiedzą, możemy przejść do przykładu z życia (jedno z dwóch najczęściej używanych przeze mnie zastosowań)
+With this knowledge, we can move to real-life example (one of the two I use most often)
 
 .. code-block:: console
 
@@ -93,17 +94,17 @@ Z tą wiedzą, możemy przejść do przykładu z życia (jedno z dwóch najczę�
    torgiren@redraptor /tmp $ dirs -v
     0  /tmp
 
-co tu się dzieje...
+what's going on here...
 
-Będąc w katalogu ``/tmp``, odkładam na stos bieżący katalog - czyli ``/tmp``.
-Skutkuje to powstaniem dwóch wpisów ``/tmp`` na stosie.
-Następnie zmieniam katalogi na ``/etc``, ``/etc/conf.d``, ``/etc/init.d``.
-Jak wiemy, operacja ``cd`` zmienia tylko najwyższy element, dlatego na pozycji 1 wciąż znajduje się ``/tmp``.
-Po skończonej pracy w katalogach ``/etc``, po wpisaniu ``popd`` ściągam aktualny katalog i pozycja 1 staje się pozycją 0, czyli wracamy do katalogu ``/tmp``.
-Jest to ulepszona wersja ``cd -``, gdyż ``cd -`` pozwala wrócić tylko do poprzedniego katalogu, natomiast użycie stosu pozwala na dokonanie dowolnej liczby przejść pomiędzy katalogami a następnie powrót do zapamiętanej pozycji.
+When I was in ``/tmp`` directory, I pushed on the stack the current directory - ``/tmp``.
+As a result, I had ``/tmp`` twice on the stack.
+Next, I changed the directories to ``/etc``, ``/ecp/conf.d``, ``/etc/init.d``.
+As we know, ``cd`` change only the top element, what that's why there's ``/tmp`` still on position 1.
+After finishing work in ``/etc`` directories, I used ``popd`` to pop the top element, and position 1 became position 0, so I backed to the ``/tmp`` directory.
+It's the improved version of ``cd -``, because ``cd -`` allows to back only to the last directory and using stack allows to make any number of dir changes and then back to remembered position.
 
-Użycie polecenia ``pushd -n`` daje możliwość odkładania katalogów na stos bez zmiany aktualnego katalogu.
-Są one wtedy odkładane na pozycję 1.
+We can also use ``pushd -n`` to add items on the stack without changing the current directory.
+It is added to the second position then.
 
 .. code-block:: console
 
@@ -127,8 +128,11 @@ Są one wtedy odkładane na pozycję 1.
     2  a2
     3  a1
 
-Z tak przygotowanym stosem, możemy przejść do drugiej najczęściej wykorzystywanego przeze mnie możliwości jaką daje stos katalogów.
-Powiedzmy, że chcemy przenieść plik ``test2.txt`` do katalogu ``a2``, natomiast ``test3.txt`` do katalogu ``a3``. Zamiast robić standardowe ``mv a1/test2.txt a2``, możemy zrobić:
+
+With stack like this, we can go to the second functionality most often used by me.
+
+Let's say we want to move ``test2.txt`` file to ``a2`` directory, and ``test3.txt`` to ``a3``.
+Instead of the standard ``mv a1/test2.txt a2`` we can do:
 
 .. code-block:: console
 
@@ -138,7 +142,7 @@ Powiedzmy, że chcemy przenieść plik ``test2.txt`` do katalogu ``a2``, natomia
    przemianowany 'a1/test3.txt' -> 'a3/test3.txt'
 
 
-mimo, że nie wydaje się to dużo lepsze i wygodniejsze niż tradycyjny ``mv``, zobaczmy inny, bardziej życiowy przykład:
+At first glance it can not seems like a big improvement to standard ``mv``, but let's take a look at a real-life example:
 
 .. code-block:: console
 
@@ -163,15 +167,16 @@ mimo, że nie wydaje się to dużo lepsze i wygodniejsze niż tradycyjny ``mv``,
    torgiren@redraptor /tmp/pushd $ dirs -v
     0  /tmp/pushd
 
-dlatego powyższy przykład uważam za przydatny?
-Ponieważ, na żadnym etapie nie jest wymagane dokładne znane ścieżki ani źródła ani celu.
-W przypadku celu, zapisujemy aktualny katalog, a w przypadku źródła możemy dowolnie przemieszczać się pomiędzy katalogami w poszukiwaniu żądanego pliku.
-A następnie, w prosty sposób powrócić do pierwotnego katalogu roboczego.
+why I find this example to be useful?
+Because at any stage I don't need to know the exact file path of source nor destination.
+When talking about the destination, we store current directory on stack, and with source, we can navigate between directories looking for the expected file.
+And then, in an easy way we can return to the primary directory.
 
-Kolejną rzeczą którą możemy zrobić używając stosu katalogów, jest jego rotacja.
 
-Pozwala ona na przechodzenie po katalogach na stosie bez usuwania ich ze stosu.
-Kierunek oraz krok o jaki zostanie przesunięty stos, podaje się jako argument w formie ``+/-num`` zamiast katalogu.
+The next thing we can do with the directory stack is to rotate it.
+
+It lets you change directories without removing them from the stack.
+Direction and step that the stack should be rotated are passed as argument in the format ``+/-num`` instead of a directory.
 
 .. code-block:: console
 
@@ -197,10 +202,11 @@ Kierunek oraz krok o jaki zostanie przesunięty stos, podaje się jako argument 
    torgiren@redraptor /tmp/pushd/a3 $ pushd +1
    /tmp/pushd/a1 /tmp/pushd/a2 /tmp/pushd/a3
 
-Przedostatnią rzeczą, jaką można zrobić ze stosem, to zdejmowanie z niego wybranych elementów.
-Ponieważ ``popd`` pozwala zdjąć nie tylko najwyższy, ale również dowolny inny element.
-Określenie, który element ma zostać usunięty jest podawane jako argument numeryczny poprzedzony znakiem ``+`` bądź ``-`` określający, czy liczymy elementy od wierzchu czy od spodu stosu.
-Dla przykładu, usuńmy ze stosu elementy ``a5``, ``a15``, ``a20``, ``a1``, ``a19``.
+
+The last but one thing which we can do with the stack is to remove specified elements from it.
+Because ``popd`` let us remove not only the top element but also any other.
+To specify the item to remove we have to specify it by passing number with direction ``+`` or ``-`` which means that we want to count from the top or the bottom.
+Ex. let's remove from stack elements ``a5``, ``a15``, ``a20``, ``a1``, ``a19``.
 
 .. code-block:: console
 
@@ -259,8 +265,8 @@ Dla przykładu, usuńmy ze stosu elementy ``a5``, ``a15``, ``a20``, ``a1``, ``a1
    /tmp/pushd a18 a17 a16 a14 a13 a12 a11 a10 a9 a8 a7 a6 a4 a3 a2
 
 
-I ostatnia operacja która może być przydatna, czyli wyczyszczenie stosu, pozostawiając jedynie bieżący katalog.
-Używa się do tego polecenia ``dirs -c``
+And the last operation we can find useful I to clear the stack leaving only current directory.
+We use ``dirs -c`` command to achieve that
 
 .. code-block:: console
 
