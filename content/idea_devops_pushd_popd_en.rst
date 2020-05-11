@@ -10,6 +10,8 @@ Pushd/Popd
 
 In this post, I will show bash commands ``pushd`` and ``popd``.
 
+.. youtube:: 1bGq9bYbzyI
+
 `Bash` shell has one functionality that is not widely known - this functionality is directory stack.
 
 As the name suggests, it's a stack where one can store directories, and on top of that stack is stored current directory.

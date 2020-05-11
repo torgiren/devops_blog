@@ -9,6 +9,8 @@ Pushd/Popd
 
 W tym poście pokażę jak działają bashowe polecenia ``pushd`` oraz ``popd``.
 
+.. youtube:: fBSiKWqd94s
+
 Powłoka ``bash`` posiada pewną funkcjonalność, która nie jest powszechnie znana - tą funkcjonalnością jest stos katalogów.
 
 Jak sama nazwa wskazuje, jest to stos na którym odkładane są ścieżki do katalogów, a na jego szczycie znajduje się aktualny katalog.
