@@ -7,12 +7,15 @@ Hello World w Linuksie
 :slug: hello-world
 :date: 2020-07-16
 
-W tym poście napiszę prosty program Hello World pod Linuksa
+W tym poście napiszę prosty program Hello World pod Linuksa.
 
-Zacznijmy od napisania wypisywania napisu na ekran.
+Kod programu
+------------
 
-Użyjemy do tego wywołania systemowego ``write`` a następnie zwrócimy ``0``.
-Bazując na `liście syscalli`_, widzimy, że ``write`` ma number ``1``, natomiast ``exit`` ma number ``60``.
+Zacznijmy od napisania wypisywania komunikatu na ekran.
+
+| Użyjemy do tego wywołania systemowego ``write`` a następnie zwrócimy ``0``.
+| Bazując na `liście syscalli`_, widzimy, że ``write`` ma number ``1``, natomiast ``exit`` ma number ``60``.
 
 Następnie, sprawdzając w manualu dla tych ``syscall``-i widzimy, że ``write`` przyjmuje trzy argumenty, natomiast ``exit`` przyjmuje jeden.
 
@@ -54,9 +57,9 @@ Następnie, używając `opcodes`_, widzimy że instrukcja ``mov`` dla wartości 
 
     MOV r16/32/64 imm16/32/64 B8+r
 
-gdzie ``r`` oznacza numer  rejestru którego chcemy użyć. Ponieważ rejestry są numerowane od zera w kolejności ``rax``, ``rcx``, ``rdx``, ``rbx``, ``rsp``, ``rbp``, ``rsi`` oraz ``rdi``, 
+gdzie ``r`` oznacza numer  rejestru którego chcemy użyć, pamiętając że rejestry są numerowane od zera w kolejności ``rax``, ``rcx``, ``rdx``, ``rbx``, ``rsp``, ``rbp``, ``rsi`` oraz ``rdi``,
 
-natomiast ``syscall`` ma opcode: ``0F 05``
+Natomiast ``syscall`` ma opcode: ``0F 05``
 
 .. code-block:: plain
 
@@ -79,9 +82,16 @@ dlatego, aby zapisać nasz kod będziemy potrzebowali następujących instrukcji
 a za nimi umieścimy nasz napis ``Hello World`` czyli ``4865 6c6c 6f20 576f 726c 640a``
 
 Zapisując to w jednej lini:
-``b801 0000 00ba 0100 0000 beEA EAEA EAba EBEB EBEB 0F05 b83c 0000 00ba 0000 0000 0F05 4865 6c6c 6f20 576f 726c 640a``
 
-Teraz musimy przygotować nagłówek ``ELF``. Posłużymy się tutaj dokumentacją nagłówków `elf`_.
+.. code-block:: plain
+
+   b801 0000 00ba 0100 0000 beEA EAEA EAba EBEB EBEB 0F05 b83c 0000 00ba 0000 0000 0F05 4865 6c6c 6f20 576f 726c 640a
+
+Nagłówek ELF
+------------
+
+| Teraz musimy przygotować nagłówek ``ELF``. Posłużymy się tutaj dokumentacją nagłówków `elf`_.
+| Nie będę dokładnie opisywał wszystkich pól, a skupię się jedynie na tych które będą nam potrzebne do napisania aplikacji.
 
 Nagłówek ``ELF`` ma następującą strukturę:
 
@@ -104,7 +114,7 @@ Nagłówek ``ELF`` ma następującą strukturę:
        uint16_t      e_shstrndx;
    } ElfN_Ehdr;
 
-która u nas przyjmie następujące wartości :P
+która u nas przyjmie następujące wartości
 
 ``e_ident``:
 
@@ -182,12 +192,17 @@ która u nas przyjmie następujące wartości :P
 
 e_shstrndx;
 
-    | Dwubajtowa wartość określająca indeks w nagłówkach sekcji przechowująca nazwy sekcji
+    | Dwubajtowa wartość określająca indeks nagłówka sekcji opisującego fragment przechowujący nazwy sekcji
     | Roboczo przyjmijmy wartość ``0xFFFF``.
 
 Efekcie, nagłówek będzie wyglądał następująco:
 
-``7f45 4c46 0201 0103 0000 0000 0000 0000 0200 3e00 0100 0000 AAAA AAAA AAAA AAAA BBBB BBBB BBBB BBBB CCCC CCCC CCCC CCCC 0000 0000 4000 3800 DDDD 4000 EEEE FFFF``
+.. code-block:: plain
+
+   7f45 4c46 0201 0103 0000 0000 0000 0000 0200 3e00 0100 0000 AAAA AAAA AAAA AAAA BBBB BBBB BBBB BBBB CCCC CCCC CCCC CCCC 0000 0000 4000 3800 DDDD 4000 EEEE FFFF
+
+Nagłówki programowe
+-------------------
 
 Następnie przygotujemy nagłówki programowe. Struktura każdego wpisu jest następująca:
 
@@ -204,7 +219,7 @@ Następnie przygotujemy nagłówki programowe. Struktura każdego wpisu jest nas
        uint64_t   p_align;
    } Elf64_Phdr;
 
-Stworzymy sobie jeden nagłówek programowy, który będzie ładował nasz wykonywalny do pamięci
+Stworzymy sobie jeden nagłówek programowy, który będzie ładował nasz kod wykonywalny do pamięci
 
 ``p_type``:
 
@@ -228,8 +243,8 @@ Stworzymy sobie jeden nagłówek programowy, który będzie ładował nasz wykon
 
 ``p_paddr``:
 
-    | TODO.
-    | Roboczo przyjmijmy to samo co ``p_vaddr`` ``0xACACACACACACACAC``.
+    | Ośmiobajtowa wartość przechowująca fizyczny adres. Na systemach System V jest to ignorowane, ale zwykle podaje się to samo, co ``p_vaddr``.
+    | Roboczo przyjmijmy ``0xACACACACACACACAC``.
 
 ``p_filesz``:
 
@@ -244,10 +259,16 @@ Stworzymy sobie jeden nagłówek programowy, który będzie ładował nasz wykon
 ``p_align``:
 
     | Ośmiobajtowa wartość przechowująca wartość dla wyrównania.
-    | Przyjmijmy ``0x0000000000001000``.
+    | Przyjmijmy ``0x0000000000000000``.
 
 W efekcie nagłówki programowe przyjmują postać:
-``0100 0000 0500 0000 ABAB ABAB ABAB ABAB ACAC ACAC ACAC ACAC ACAC ACAC ACAC ACAC ADAD ADAD ADAD ADAD ADAD ADAD ADAD ADAD 0010 0000 0000 0000``
+
+.. code-block:: plain
+
+   0100 0000 0500 0000 ABAB ABAB ABAB ABAB ACAC ACAC ACAC ACAC ACAC ACAC ACAC ACAC ADAD ADAD ADAD ADAD ADAD ADAD ADAD ADAD 0000 0000 0000 0000
+
+Nagłówki sekcji
+---------------
 
 Następnie potrzebujemy dwóch sekcji.
 Jednej na kod aplikacji, drugiej na nazwy sekcji.
@@ -305,27 +326,29 @@ Jako pierwszą przygotujemy sekcję z nazwami sekcji.
 
 ``sh_link``:
 
-    | TODO
-    | ``0x00000000``
+    | Czterobajtowa wartość, której zawartość jest różnie interpretowana w zależności o typu.
+    | W naszym przypadku przyjmujemy ``0x00000000``
 
 ``sh_info``:
 
-    | TODO
-    | ``0x00000000``
+    | Czterobajtowa wartość, której zawartość jest różnie interpretowana w zależności o typu.
+    | W naszym przypadku przyjmujemy ``0x00000000``
 
 ``sh_addralign``:
 
-    | TODO
-    | ``0x0000000000000000``
+    | Ośmiobajtowa wartość przechowująca wartość dla wyrównania.
+    | Przyjmujemy ``0x0000000000000000``.
 
 ``sh_entsize``:
 
-    | TODO
-    | ``0x0000000000000000``
+    | Ośmiobajtowa wartość która jest używana, gdy sekcja opisuje tablicę o zadanym rozmiarze.
+    | W naszym przypadku przyjmujemy ``0x0000000000000000``
 
 W efekcie ten wpis będzie miał postać
 
-``0001 0000 0300 0000 0000 0000 0000 0000 0000 0000 0000 0000 AEAE AEAE AEAE AEAE AFAF AFAF AFAF AFAF 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000``
+.. code-block:: plain
+
+   0001 0000 0300 0000 0000 0000 0000 0000 0000 0000 0000 0000 AEAE AEAE AEAE AEAE AFAF AFAF AFAF AFAF 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000
 
 Następnie przygotujmy sekcję dla programu
 
@@ -357,74 +380,66 @@ Następnie przygotujmy sekcję dla programu
 
 ``sh_link``:
 
-    | TODO
-    | ``0x00000000``
+    | Przyjmujemy ``0x00000000``
 
 ``sh_info``:
 
-    | TODO
-    | ``0x00000000``
+    | Przyjmujemy ``0x00000000``
 
 ``sh_addralign``:
 
-    | TODO
-    | ``0x0000000000000000``
+    | Przyjmujemy ``0x0000000000000000``.
 
 ``sh_entsize``:
 
-    | TODO
-    | ``0x0000000000000000``
+    | Przyjmujemy ``0x0000000000000000``.
 
 Co w efekcie da nam:
 
-``0b00 0000 0100 0000 0600 0000 0000 0000 BABA BABA BABA BABA BDBD BDBD BDBD BDBD BCBC BCBC BCBC BCBC 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000``
+.. code-block:: plain
+
+   0b00 0000 0100 0000 0600 0000 0000 0000 BABA BABA BABA BABA BDBD BDBD BDBD BDBD BCBC BCBC BCBC BCBC 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000
 
 Ostatnią rzeczą którą musimy przygotować, są nazwy sekcji.
-Użyjemy domyślnych nazw ``.shstrtab`` or ``.text``
+Użyjemy domyślnych nazw ``.shstrtab`` oraz ``.text``
 
 ``002e 7368 7374 7274 6162 002e 7465 7874 0000``
 
+Układ danych w pliku
+--------------------
+
 Spróbujmy teraz ułożyć wszystkie elementy w pliku.
 
-Nagłówek ELF będzie oczywiście na początku pliku.
-Następnie nagłówki programowe umieścimy pod adresem ``0x100``,
-Nagłówki sekcji pod adresem ``0x200``,
-kod programu pod adresem ``0x300``,
-a nazwy sekcji pod ``0x400``.
+| Nagłówek ELF będzie oczywiście na początku pliku.
+| Następnie nagłówki programowe umieścimy pod adresem ``0x100``,
+| Nagłówki sekcji pod adresem ``0x200``,
+| kod programu pod adresem ``0x300``,
+| a nazwy sekcji pod ``0x400``.
+
+
+Tworzenie pliku
+---------------
 
 Znając położenie elementów w pliku, możemy podmienić placeholdery na właściwe wartości:
 
-``EAEA EAEA``: ``0x400322`` => ``2203 4000``
+.. code-block:: plain
 
-``EBEB EBEB``: ``0xC`` => ``0C00 0000``
-
-``AAAA AAAA AAAA AAAA``: ``0x400300`` => ``0003 4000 0000 0000``
-
-``BBBB BBBB BBBB BBBB``: ``0x100`` => ``0001 0000 0000 0000``
-
-``CCCC CCCC CCCC CCCC``: ``0x200`` => ``0002 0000 0000 0000``
-
-``DDDD``: ``1`` => ``0100``
-
-``EEEE``: ``3`` => ``0300``
-
-``FFFF``: ``1`` => ``0100``
-
-``ABAB ABAB ABAB ABAB``: ``0003 0000 0000 0000``
-
-``ACAC ACAC ACAC ACAC``: ``0003 4000 0000 0000``
-
-``ADAD ADAD ADAD ADAD``: ``2e00 0000 0000 0000``
-
-``AEAE AEAE AEAE AEAE``: ``0004 0000 0000 0000``
-
-``AFAF AFAF AFAF AFAF``: ``1000 0000 0000 0000``
-
-``BABA BABA BABA BABA``: ``0003 4000 0000 0000``
-
-``BDBD BDBD BDBD BDBD``: ``0000 0000 0000 0000``
-
-``BCBC BCBC BCBC BCBC``: ``2e00 0000 0000 0000``
+   EAEA EAEA: 0x400322 => 2203 4000
+   EBEB EBEB: 0xC => 0C00 0000
+   AAAA AAAA AAAA AAAA: 0x400300 => 0003 4000 0000 0000
+   BBBB BBBB BBBB BBBB: 0x100 => 0001 0000 0000 0000
+   CCCC CCCC CCCC CCCC: 0x200 => 0002 0000 0000 0000
+   DDDD: 1 => 0100
+   EEEE: 3 => 0300
+   FFFF: 1 => 0100
+   ABAB ABAB ABAB ABAB: 0003 0000 0000 0000
+   ACAC ACAC ACAC ACAC: 0003 4000 0000 0000
+   ADAD ADAD ADAD ADAD: 2e00 0000 0000 0000
+   AEAE AEAE AEAE AEAE: 0004 0000 0000 0000
+   AFAF AFAF AFAF AFAF: 1000 0000 0000 0000
+   BABA BABA BABA BABA: 0003 4000 0000 0000
+   BDBD BDBD BDBD BDBD: 0000 0000 0000 0000
+   BCBC BCBC BCBC BCBC: 2e00 0000 0000 0000
 
 Umieśćmy nasze dane w pliku (wejście zakańczamy enterem i sekwencją ``Ctrl-d``:
 
@@ -433,7 +448,7 @@ Umieśćmy nasze dane w pliku (wejście zakańczamy enterem i sekwencją ``Ctrl-
    $ xxd -r -p - /tmp/dd #ELF
    7f45 4c46 0201 0103 0000 0000 0000 0000 0200 3e00 0100 0000 0003 4000 0000 0000 0001 0000 0000 0000 0002 0000 0000 0000 0000 0000 4000 3800 0100 4000 0300 0100
    $ xxd -r -p -s 0x100 - /tmp/dd #Program headers
-   0100 0000 0500 0000 0003 0000 0000 0000 0003 4000 0000 0000 0003 4000 0000 0000 2e00 0000 0000 0000 2e00 0000 0000 0000 0010 0000 0000 0000
+   0100 0000 0500 0000 0003 0000 0000 0000 0003 4000 0000 0000 0003 4000 0000 0000 2e00 0000 0000 0000 2e00 0000 0000 0000 0000 0000 0000 0000
    $ xxd -r -p -s 0x200 - /tmp/dd #Section header null
    0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000
    $ xxd -r -p -s 0x240 - /tmp/dd #Section header text
@@ -459,7 +474,7 @@ Otrzymany plik powinien mieć postać:
    00000100  01 00 00 00 05 00 00 00  00 03 00 00 00 00 00 00  |................|
    00000110  00 03 40 00 00 00 00 00  00 03 40 00 00 00 00 00  |..@.......@.....|
    00000120  2e 00 00 00 00 00 00 00  2e 00 00 00 00 00 00 00  |................|
-   00000130  00 10 00 00 00 00 00 00  00 00 00 00 00 00 00 00  |................|
+   00000130  00 00 00 00 00 00 00 00  00 00 00 00 00 00 00 00  |................|
    00000140  00 00 00 00 00 00 00 00  00 00 00 00 00 00 00 00  |................|
    *
    00000240  01 00 00 00 03 00 00 00  00 00 00 00 00 00 00 00  |................|
