@@ -20,7 +20,7 @@ Zacznijmy od napisania wypisywania komunikatu na ekran.
 Następnie, sprawdzając w manualu dla tych ``syscall``-i widzimy, że ``write`` przyjmuje trzy argumenty, natomiast ``exit`` przyjmuje jeden.
 
 
-.. code-block:: plain
+.. code-block:: console
 
     $ man 2 write
     ...
@@ -403,7 +403,9 @@ Co w efekcie da nam:
 Ostatnią rzeczą którą musimy przygotować, są nazwy sekcji.
 Użyjemy domyślnych nazw ``.shstrtab`` oraz ``.text``
 
-``002e 7368 7374 7274 6162 002e 7465 7874 0000``
+.. code-block:: plain
+
+   003e 7368 7374 7274 6162 002e 7465 7874 0000
 
 Układ danych w pliku
 --------------------
