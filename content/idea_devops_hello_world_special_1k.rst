@@ -401,35 +401,102 @@ Układ danych w pliku
 Spróbujmy teraz ułożyć wszystkie elementy w pliku.
 
 | Nagłówek ELF będzie oczywiście na początku pliku.
-| Następnie nagłówki programowe umieścimy pod adresem ``0x100``,
-| Nagłówki sekcji pod adresem ``0x200``,
-| kod programu pod adresem ``0x300``,
-| a nazwy sekcji pod ``0x400``.
+| Następnie nagłówki programowe umieścimy pod adresem :code:`0x100`,
+| Nagłówki sekcji pod adresem :code:`0x200`,
+| kod programu pod adresem :code:`0x300`,
+| a nazwy sekcji pod :code:`0x400`.
+
+
+Uzupełnianie placeholderów
+--------------------------
+
+Załóżmy, że nasz program umieścimy w pamięci pod adresem :code:`0x40000`.
+
+Znając położenie elementów w pliku, możemy podmienić placeholdery na właściwe wartości:
+
+:code:`AAAA AAAA AAAA AAAA`:
+
+    | Czyli nasz ``entry point``, będzie miał adres :code:`0x400300`, ponieważ program jest ładowany pod adresem :code:`0x40000`, a nasz kod w pliku jest pod adresem :code:`0x300`, a dla prostoty zachowamy takie same offsety.
+    | :code:`0003 4000 0000 0000`.
+
+:code:`BBBB BBBB BBBB BBBB`:
+
+    | Czyli offset w pliku w którym zaczynają się nagłówki programowe; u nas :code:`0x100`.
+    | :code:`0001 0000 0000 0000`
+
+:code:`CCCC CCCC CCCC CCCC`:
+
+    | Czyli offset w pliku w którym zaczynają się nagłówki sekcyjne; u nas :code:`0x200`.
+    | :code:`0002 0000 0000 0000`
+
+:code:`DDDD`:
+
+    | Czyli liczba nagłówków programowych, czyli ``1``.
+    | :code:`0100`.
+
+:code:`EEEE`:
+
+    | Czyli liczba nagłówków sekcyjnych, czyli ``3``.
+    | :code:`0300`.
+
+:code:`FFFF`:
+
+    | Czyli index nagłówka sekcji z nazwami sekcji, czyli ``1``.
+    | :code:`0100`.
+
+:code:`ABAB ABAB ABAB ABAB`:
+
+    | Czyli offset w pliku w którym zaczyna się kod, czyli :code:`0x300`.
+    | :code:`0003 0000 0000 0000`.
+
+:code:`ACAC ACAC ACAC ACAC`:
+
+    | Czyli address w pamięci do którego ma zostać załadowany kod, czyli :code:`0x40300`.
+    | :code:`0003 4000 0000 0000`.
+
+:code:`ADAD ADAD ADAD ADAD`:
+
+    | Czyli liczba bajtów która ma zostać załadowana, czyli :code:`0x2e`.
+    | :code:`2e00 0000 0000 0000`
+
+:code:`AEAE AEAE AEAE AEAE`:
+
+    | Czyli offset w którym zaczyna się w pliku sekcja z nazwami sekcji.
+    | :code:`0004 0000 0000 0000`
+
+:code:`AFAF AFAF AFAF AFAF`:
+
+    | Czyli rozmiar sekcji. Jest to suma długości nazw sekcji wraz z znakami ``NULL``.
+    | :code:`1200 0000 0000 0000`
+
+:code:`BABA BABA BABA BABA`:
+
+    | Czyli adres sekcji w pamięci. Nasz kod został załadowany pod adres :code:`0x40300`.
+    | :code:`0003 4000 0000 0000`.
+
+:code:`BDBD BDBD BDBD BDBD`:
+
+    | Czyli offset tej sekcji w pliku. U nas :code:`0x300`.
+    | :code:`0003 0000 0000 0000`.
+
+:code:`BCBC BCBC BCBC BCBC`:
+
+    | Czyli długość sekcji z naszym kodem.
+    | :code:`2200 0000 0000 0000`.
+
+:code:`EAEA EAEA`:
+
+    | Czyli adres pod którym znajduje się ``Hello world``. W naszym przypadku znajduje się on tuż za kodem, czyli :code:`0x22` za początkiem kodu w :code:`0x40300`.
+    | :code:`2203 4000`
+
+:code:`EBEB EBEB`:
+
+    | Czyli długość napisu ``Hellow world``.
+    | :code:`0C00 0000`.
 
 
 Tworzenie pliku
 ---------------
-
-Znając położenie elementów w pliku, możemy podmienić placeholdery na właściwe wartości:
-
-.. code-block:: plain
-
-   EAEA EAEA: 0x400322 => 2203 4000
-   EBEB EBEB: 0xC => 0C00 0000
-   AAAA AAAA AAAA AAAA: 0x400300 => 0003 4000 0000 0000
-   BBBB BBBB BBBB BBBB: 0x100 => 0001 0000 0000 0000
-   CCCC CCCC CCCC CCCC: 0x200 => 0002 0000 0000 0000
-   DDDD: 1 => 0100
-   EEEE: 3 => 0300
-   FFFF: 1 => 0100
-   ABAB ABAB ABAB ABAB: 0003 0000 0000 0000
-   ACAC ACAC ACAC ACAC: 0003 4000 0000 0000
-   ADAD ADAD ADAD ADAD: 2e00 0000 0000 0000
-   AEAE AEAE AEAE AEAE: 0004 0000 0000 0000
-   AFAF AFAF AFAF AFAF: 1200 0000 0000 0000
-   BABA BABA BABA BABA: 0003 4000 0000 0000
-   BDBD BDBD BDBD BDBD: 0003 0000 0000 0000
-   BCBC BCBC BCBC BCBC: 2200 0000 0000 0000
 
 Umieśćmy nasze dane w pliku (wejście zakańczamy enterem i sekwencją ``Ctrl-d``:
 
