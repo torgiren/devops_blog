@@ -462,9 +462,8 @@ Umieśćmy nasze dane w pliku (wejście zakańczamy enterem i sekwencją ``Ctrl-
 
 Otrzymany plik powinien mieć postać:
 
-.. code-block:: plain
+.. code-block:: hexdump
 
-   torgiren@redraptor /tmp $ hexdump -C /tmp/dd
    00000000  7f 45 4c 46 02 01 01 03  00 00 00 00 00 00 00 00  |.ELF............|
    00000010  02 00 3e 00 01 00 00 00  00 03 40 00 00 00 00 00  |..>.......@.....|
    00000020  00 01 00 00 00 00 00 00  00 02 00 00 00 00 00 00  |................|
