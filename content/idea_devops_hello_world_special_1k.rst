@@ -32,7 +32,7 @@ Następnie, sprawdzając w manualu dla tych ``syscall``-i widzimy, że ``write``
     void _exit(int status);
     ...
 
-Natomiast w `abi`_ (str 137) widzimy, że numer ``syscall``-a należy podać w rejestrze ``rax``, natomiast argumenty kolejno w ``rdi``, ``rsi``, ``rdx``.
+Natomiast w `abi dla amd64`_ (str 137) widzimy, że numer ``syscall``-a należy podać w rejestrze ``rax``, natomiast argumenty kolejno w ``rdi``, ``rsi``, ``rdx``.
 
 Jako ``fd`` podajemy ``1``, które odpowiada standardowemu wyjściu, jako ``buf`` podajemy adres do łańcucha znaków do wypisania oraz jako ``count`` podajemy długość tego łańcucha.
 
@@ -40,14 +40,14 @@ Co prowadzi nas do następującego pseudokodu:
 
 .. code-block:: asm
 
-   movl $1, %rax
-   movl $1, %rdi
-   movl string address, %rsi
-   movl string lenght, %rdx
+   movl $1, %eax
+   movl $1, %edi
+   movl string address, %esi
+   movl string lenght, %edx
    syscall
 
-   movl $60, $rax
-   movl $0, $rdi
+   movl $60, $eax
+   movl $0, $edi
    syscall
 
 
@@ -70,25 +70,25 @@ dlatego, aby zapisać nasz kod będziemy potrzebowali następujących instrukcji
 .. code-block:: plain
 
    b8 01 00 00 00
-   ba 01 00 00 00
+   bf 01 00 00 00
    be EA EA EA EA
    ba EB EB EB EB
    0F 05
 
    b8 3c 00 00 00
-   ba 00 00 00 00
+   bf 00 00 00 00
    0F 05
 
 a za nimi umieścimy nasz napis ``Hello World`` czyli :code:`4865 6c6c 6f20 576f 726c 640a`
 
 Zapisując to w jednej lini:
 
-:code:`b801 0000 00ba 0100 0000 beEA EAEA EAba EBEB EBEB 0F05 b83c 0000 00ba 0000 0000 0F05 4865 6c6c 6f20 576f 726c 640a`
+:code:`b801 0000 00bf 0100 0000 beEA EAEA EAba EBEB EBEB 0F05 b83c 0000 00bf 0000 0000 0F05 4865 6c6c 6f20 576f 726c 640a`
 
 Nagłówek ELF
 ------------
 
-| Teraz musimy przygotować nagłówek ``ELF``. Posłużymy się tutaj dokumentacją nagłówków `elf`_.
+| Teraz musimy przygotować nagłówek ``ELF``. Posłużymy się tutaj dokumentacją nagłówków `elf`_ oraz `abi`_.
 | Nie będę dokładnie opisywał wszystkich pól, a skupię się jedynie na tych które będą nam potrzebne do napisania aplikacji.
 
 Nagłówek ``ELF`` ma następującą strukturę:
@@ -363,11 +363,11 @@ Następnie przygotujmy sekcję dla programu
 
 ``sh_offset``:
 
-    | Roboczo przyjmijmy :code:`0xBDBDBDBDBDBDBDBD`.
+    | Roboczo przyjmijmy :code:`0xBCBCBCBCBCBCBCBC`.
 
 ``sh_size``:
 
-    | Roboczo przyjmijmy :code:`0xBCBCBCBCBCBCBCBC`.
+    | Roboczo przyjmijmy :code:`0xBDBDBDBDBDBDBDBD`.
 
 
 ``sh_link``:
@@ -388,7 +388,7 @@ Następnie przygotujmy sekcję dla programu
 
 Co w efekcie da nam:
 
-:code:`0b00 0000 0100 0000 0600 0000 0000 0000 BABA BABA BABA BABA BDBD BDBD BDBD BDBD BCBC BCBC BCBC BCBC 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000`
+:code:`0b00 0000 0100 0000 0600 0000 0000 0000 BABA BABA BABA BABA BCBC BCBC BCBC BCBC BDBD BDBD BDBD BDBD 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000`
 
 Ostatnią rzeczą którą musimy przygotować, są nazwy sekcji.
 Użyjemy domyślnych nazw ``.shstrtab`` oraz ``.text``
@@ -474,12 +474,12 @@ Znając położenie elementów w pliku, możemy podmienić placeholdery na wła�
     | Czyli adres sekcji w pamięci. Nasz kod został załadowany pod adres :code:`0x40300`.
     | :code:`0003 4000 0000 0000`.
 
-:code:`BDBD BDBD BDBD BDBD`:
+:code:`BCBC BCBC BCBC BCBC`:
 
     | Czyli offset tej sekcji w pliku. U nas :code:`0x300`.
     | :code:`0003 0000 0000 0000`.
 
-:code:`BCBC BCBC BCBC BCBC`:
+:code:`BDBD BDBD BDBD BDBD`:
 
     | Czyli długość sekcji z naszym kodem.
     | :code:`2200 0000 0000 0000`.
@@ -513,7 +513,7 @@ Umieśćmy nasze dane w pliku (wejście zakańczamy enterem i sekwencją ``Ctrl-
    $ xxd -r -p -s 0x280 - /tmp/dd #Section header text
    0b00 0000 0100 0000 0600 0000 0000 0000 0003 4000 0000 0000 0003 0000 0000 0000 2200 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000
    $ xxd -r -p -s 0x300 - /tmp/dd #Code
-   b801 0000 00ba 0100 0000 be22 0340 00ba 0C00 0000 0F05 b83c 0000 00ba 0000 0000 0F05 4865 6c6c 6f20 576f 726c 640a
+   b801 0000 00bf 0100 0000 be22 0340 00ba 0C00 0000 0F05 b83c 0000 00bf 0000 0000 0F05 4865 6c6c 6f20 576f 726c 640a
    $ xxd -r -p -s 0x400 - /tmp/dd #Section names
    002e 7368 7374 7274 6162 002e 7465 7874 0000
 
@@ -560,6 +560,7 @@ Oraz być uruchamialny:
 
 
 .. _liście syscalli: https://github.com/torvalds/linux/blob/master/arch/x86/entry/syscalls/syscall_64.tbl
-.. _abi: https://software.intel.com/sites/default/files/article/402129/mpx-linux64-abi.pdf
+.. _abi dla amd64: https://software.intel.com/sites/default/files/article/402129/mpx-linux64-abi.pdf
+.. _abi: http://www.sco.com/developers/gabi/latest/ch4.eheader.html
 .. _opcodes: http://ref.x86asm.net/coder64-abc.html
 .. _elf: https://linux.die.net/man/5/elf
