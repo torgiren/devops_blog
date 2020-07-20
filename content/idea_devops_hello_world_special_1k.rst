@@ -3,11 +3,13 @@ Hello World w Linuksie
 
 :keywords: linux, hello, world, tutorial, hacking, devops, assembler, elf
 :tags: linux, hello, world, tutorial, hacking, devops, assembler, elf
-:status: draft
+:status: published
 :slug: hello-world
-:date: 2020-07-16
+:date: 2020-07-20
 
 W tym poście napiszę prosty program Hello World pod Linuksa.
+
+.. youtube:: ZDLo40giqnE/
 
 Kod programu
 ------------
