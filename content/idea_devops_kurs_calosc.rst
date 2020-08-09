@@ -7,7 +7,6 @@ Kurs DevOps
 :slug: devops-course
 :date: 2020-07-25
 
-
 Zarys:
 
 - Tworzenie maszyn w różnych serwisach
@@ -43,3 +42,14 @@ Zarys:
 - Konfiguracja używalnego serwera pocztowego - spf, dkim, greylist, skrzynki wirtualne
 - service discovery. consul, etcd, zookeeper, eureka
 - dynamiczny load balancer: haproxy? envoy?
+- ldap, openid, ??? - freeipa, openldap, port389, dex, ???
+- python i autoryzacja z powyższym
+- go i autoryzacja z powyższym?
+- php i autoryzacja z powyższym
+- shared storage: nfs, gluster, ceph
+- podstawy selinux. dodawanie portów, ustawiani kontaktów na plikach
+- (wielka niewiadoma) własne reguły dla selinux
+- ssl krok po kroku - czyli napisanie własnego clienta https.
+
+
+
