@@ -50,6 +50,24 @@ Zarys:
 - podstawy selinux. dodawanie portów, ustawiani kontaktów na plikach
 - (wielka niewiadoma) własne reguły dla selinux
 - ssl krok po kroku - czyli napisanie własnego clienta https.
+- iac z użyciem terraforma
+- monitoring usług i serwerów. nagios, shinken(??), icinga, prometheus, grafana
+- rysowanie grafów infrastruktury - plantuml
+- kontrola wersji - git
+- hostowanie gia - github, gitolite, gitlab
+- code review - gerrit, github, gitlab
+- Job runner - rundeck
+- systemy ticketowe - redmine, github
+- wyrażenia regularne
+- redis. czym jest, zastosowanie, klastrowanie
+- rabbitmq. czym jest zastosownie, klastrowanie
+- kafka. czym jest zastosowanie, klastrowanie
+- postgresl. klastrowanie
+- mariaDB. klastrowanie (??? wielki znak zapytania)
+
+
+
+
 
 
 
