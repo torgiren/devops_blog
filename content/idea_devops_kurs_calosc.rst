@@ -64,8 +64,10 @@ Zarys:
 - kafka. czym jest zastosowanie, klastrowanie
 - postgresl. klastrowanie
 - mariaDB. klastrowanie (??? wielki znak zapytania)
-
-
+- openvpn
+- cache http. nginx, varnish, cloudflare, ???
+- uruchamianie aplikacji w chroot
+- udostępnianie funkcjonalności poprzez authorized_keys i command
 
 
 
