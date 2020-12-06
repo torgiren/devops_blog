@@ -153,8 +153,8 @@ Wśród katalogów, które znajdują się w katalogu głównym, widzimy katalog 
 
 .. code-block:: console
 
-[vagrant@localhost /]$ cd home
-[vagrant@localhost home]$ ls
-vagrant
+   [vagrant@localhost /]$ cd home
+   [vagrant@localhost home]$ ls
+   vagrant
 
 Po zmianie katalogu na ``home``, ponownie widzimy zmianę znaku zachęty, wylistowanie plików w tymże katalogu, widzimy, że znajduje się tam jedynie nasz katalog ``vagrant`
