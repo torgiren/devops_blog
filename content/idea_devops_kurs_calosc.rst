@@ -157,4 +157,4 @@ Wśród katalogów, które znajdują się w katalogu głównym, widzimy katalog 
    [vagrant@localhost home]$ ls
    vagrant
 
-Po zmianie katalogu na ``home``, ponownie widzimy zmianę znaku zachęty, wylistowanie plików w tymże katalogu, widzimy, że znajduje się tam jedynie nasz katalog ``vagrant`
+Po zmianie katalogu na ``home``, ponownie widzimy zmianę znaku zachęty, wylistowanie plików w tymże katalogu, widzimy, że znajduje się tam jedynie nasz katalog ``vagrant``

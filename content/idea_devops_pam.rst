@@ -4,7 +4,9 @@ PAM - Pluggable Authentication Modules
 :keywords: linux, kernel, pam, hacking, devops, security
 :tags: linux, kernel, pam, hacking, devops, security
 :status: draft
-:sllug: pam
+:slug: pam
+:date: 2020-07-25
+
 
 Notes:
 
@@ -77,7 +79,7 @@ gdzie:
 
   - `success` - oznaczający, że uwierzytelnianie przy użyciu tego modułu zakończyło się sukcesem
   - `default` - określający domyślną akcję dla wartości które nie zostały zdefiniowane
-  
+
   Natomiast akcja może być jedną z poniższych:
 
   - `ignore` - oznacza, że ten moduł powinien zostać zignorowany
@@ -86,7 +88,7 @@ gdzie:
   - `ok` - oznacza, że wynik działania modułu jest pozytywny
   - `done` - podobnie jak `ok`, z tą różnicą, że łańcuch nie jest dalej przetwarzany (podobnie jak `required` i `sufficient`)
   - `reset` - powoduje wyczyszczenie aktualnego stanu łańcucha i przetwarzanie kolejnych reguł (TODO: Sprawdzić empirycznie)
-  ` `<num>` - wartość numeryczna oznacza liczbę reguł które zostaną pominięte (używane przy konstruowaniu alternatywnych ścieżek uwierzytelniania)
+  - `<num>` - wartość numeryczna oznacza liczbę reguł które zostaną pominięte (używane przy konstruowaniu alternatywnych ścieżek uwierzytelniania)
 
   Jak widać, standardowe metody są jedynie skróconymi wersjami zapisu złożonego i mają następujące formy
 
